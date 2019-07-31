@@ -1,6 +1,5 @@
-(module pcb2molex8878 (layer F.Cu) (tedit 5D4155D2)
-  (descr "28-lead though-hole mounted DIP package, row spacing 15.24 mm (600 mils), LongPads")
-  (tags "THT DIP DIL PDIP 2.54mm 15.24mm 600mil LongPads")
+(module pcb2molex8878 (layer F.Cu) (tedit 5D417FAE)
+  (descr "Castellated edge contacts to fit Molex 8878 Socket")
   (fp_text reference J? (at -0.9906 -0.9906 -90) (layer Dwgs.User) hide
     (effects (font (size 1.2065 1.2065) (thickness 0.127)) (justify left bottom))
   )
