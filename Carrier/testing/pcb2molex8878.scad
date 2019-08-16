@@ -2,15 +2,16 @@
 // Mates with pcb2molex8878.kicad_pcb
 
 // Carrier to hold a pcb in place of a DIP28
-// to fit into Molex 8878 socket found in some vintage computers.
+// in the Molex 8878 socket found in some vintage computers.
 // Ex: Tandy Model 100, 102, 200, 600
 //       Epson PX-4, PX-8
 
 // Brian K. White - b.kenyon.w@gmail.com
 // http://tandy.wiki/pcb2molex8878
-// http://www.github.com/aljex/pcb2molex8878
+// https://github.com/aljex/pcb2molex8878/
 
 // -------------------------------------------------------------------------
+// UNITS: mm
 // globals
 
 // main outside box
@@ -119,6 +120,9 @@ module complexObject(){
             // notch in wing 1
             translate([main_x/2+blade_x1,-bt_thickness/2,main_z/2-bt_thickness-0.5]) cube([tab_x-blade_x1+1,bt_thickness,bt_thickness+1]);
         }
+
+            // vanity
+            translate([-pocket_x/2+2,pocket_y/2-2,-main_z/2+pcb_elev-pocket_z-0.25]) rotate([0,0,180]) linear_extrude(.5) text("pcb2molex8878", size=2, halign="right");
         
     }
 }
@@ -130,4 +134,4 @@ complexObject();
 mirror_copy([1,0,0]) translate([-pcb_x/2,w_y/2,-main_z/2+pcb_elev+pcb_z]) wedge();
 
 // pcb polarity pin
-translate([pp_x,pp_y,-main_z/2+pp_z/2]) cylinder(h=pp_z, d=pp_d,center=true,$fn=32);
+translate([pp_x,pp_y,-main_z/2+pp_z/2]) cylinder(h=pp_z, d=pp_d,center=true,$fn=18);
