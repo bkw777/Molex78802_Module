@@ -26,8 +26,8 @@ contacts_y=2.6;
 // pcb
 pcb_x=37.6;
 pcb_y=15.2;
-pcb_z=1.6;
-pcb_elev=2.2;
+pcb_z=1.8;  // thickness of pcb (nominal 1.6), plus fudge (0.2)
+pcb_elev=2.2;  // bottom of pcb above socket floor
 
 // cavity in bottom tray for backside components and through-hole legs 
 pocket_x=36;
