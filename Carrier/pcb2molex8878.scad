@@ -39,6 +39,7 @@ pin_d=2;                        // diameter, 0.2 less than hole in pcb
 pocket_x=36;
 pocket_y=12.5;  // allow tsop48, leave walls >= 0.7
 pocket_z=1.2;   // allow tsop48, leave floor >= 0.7
+pocket_floor=pcb_elev-pocket_z;
 
 // wedge corner posts - pins 1/28 end
 cpwedge_xwide=1.6;      // thick end of wedge
@@ -160,7 +161,7 @@ difference(){
       cube([wing_x-blade_xwide+1,blade_thickness,wing_thickness+1]);
 
     // engrave label into floor
-    translate([0,0,-main_z/2+pcb_elev-pocket_z-text_z])
+    translate([0,0,-main_z/2+pocket_floor-text_z])
       rotate([0,0,180])
         linear_extrude(text_z+0.01)
           text(text_v,size=3,halign="center");
@@ -180,5 +181,7 @@ mirror_copy([1,0,0]) // pin 1/28 end
         ]);
 
 // pcb polarity pin
-translate([pin_x,pin_y,-main_z/2+pin_z/2])
-  cylinder(h=pin_z,d=pin_d,center=true,$fn=18);
+translate([pin_x,pin_y,-main_z/2+pocket_floor]){
+  cylinder(h=pin_z-pocket_floor,d=pin_d,$fn=18); // pin
+  cylinder(h=0.25,d1=pin_d+0.5,d2=pin_d,$fn=18); // fillet
+}
