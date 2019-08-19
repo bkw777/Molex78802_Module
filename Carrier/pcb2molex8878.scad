@@ -28,12 +28,7 @@ pcb_x=38.1;     // leave walls > 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
 pcb_y=16.3;
 pcb_z=1.8;      // thickness of pcb (nominal 1.6, plus 0.2)
 pcb_elev=2.0;   // bottom of pcb above socket floor
-
-// pcb polarity pin
-pin_x=14.53;                    // center X
-pin_y=3.4;                      // center Y
-pin_z=pcb_elev+pcb_z-0.2;       // top of pin, 0.2 below top of pcb
-pin_d=2;                        // diameter, 0.2 less than hole in pcb
+pcb_cham=1.6;   // pin 1 corner polarity chamfer
 
 // cavity in bottom tray for backside components and through-hole legs 
 pocket_x=36;
@@ -149,9 +144,10 @@ difference(){
         cube([contacts_x,contacts_y,main_z+1],center=true);
     
     // remove walls extending from corner posts - too thin for 3d-printing
-    mirror_copy ([0,1,0]) // pin 1 wedge corner post
-      translate([main_x/2-cpwedge_xwide-2,-pcb_y/2-1,-main_z/2+pcb_elev]) // pin 28 wedge corner post
-        cube([2,2,main_z]);
+    translate([main_x/2-cpwedge_xwide-2,pcb_y/2-1,-main_z/2+pcb_elev+pcb_z]) // pin 1 wedge corner post
+      cube([2,2,main_z]);
+    translate([main_x/2-cpwedge_xwide-2,-pcb_y/2-1,-main_z/2+pcb_elev]) // pin 28 wedge corner post
+      cube([2,2,main_z]);
     mirror_copy ([0,1,0]) // pin 14 box corner post
       translate([-main_x/2-cpbox_xe+cpbox_x,-pcb_y/2-1,-main_z/2+pcb_elev]) // pin 15 box corner post
         cube([2,2,main_z]);
@@ -180,8 +176,11 @@ mirror_copy([1,0,0]) // pin 1/28 end
           [ret_x,0]
         ]);
 
-// pcb polarity pin
-translate([pin_x,pin_y,-main_z/2+pocket_floor]){
-  cylinder(h=pin_z-pocket_floor,d=pin_d,$fn=18); // pin
-  cylinder(h=0.25,d1=pin_d+0.5,d2=pin_d,$fn=18); // fillet
-}
+// pcb polarity chamfer
+translate([pcb_x/2,pcb_y/2,-main_z/2+pcb_elev])
+  linear_extrude(pcb_z)
+    polygon([
+      [-pcb_cham,0],
+      [0,0],
+      [0,-pcb_cham]
+    ]);
