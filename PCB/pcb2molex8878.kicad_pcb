@@ -106,7 +106,7 @@
     (diff_pair_gap 0.254)
   )
 
-  (module 000_LOCAL:pcb2molex8878 (layer Top) (tedit 5D51EFFE) (tstamp 5D520E38)
+  (module 000_LOCAL:pcb2molex8878 (layer Top) (tedit 5D5D05DF) (tstamp 5D520E38)
     (at 147.2184 99.187)
     (descr "Castellated edge contacts to fit Molex 8878 Socket")
     (fp_text reference J? (at -0.9906 -0.9906 -90) (layer Dwgs.User) hide
@@ -170,12 +170,12 @@
     (fp_line (start -8.128 -19.05) (end 8.128 19.05) (layer Dwgs.User) (width 0.01))
     (fp_line (start 8.128 19.05) (end 8.128 -19.05) (layer Eco1.User) (width 0.0254))
     (fp_line (start -8.128 19.05) (end -8.128 -19.05) (layer Eco1.User) (width 0.0254))
-    (fp_arc (start 1.6256 -19.9136) (end 0.762 -19.9136) (angle -90) (layer Dwgs.User) (width 0.00508))
-    (fp_arc (start -1.6256 -19.9136) (end -1.6256 -19.05) (angle -90) (layer Dwgs.User) (width 0.00508))
-    (fp_arc (start 2.1717 19.9136) (end 3.0353 19.9136) (angle -90) (layer Dwgs.User) (width 0.00508))
-    (fp_arc (start 5.4229 19.9136) (end 5.4229 19.05) (angle -90) (layer Dwgs.User) (width 0.00508))
-    (fp_arc (start -2.1717 19.9136) (end -2.1717 19.05) (angle -90) (layer Dwgs.User) (width 0.00508))
-    (fp_arc (start -5.4229 19.9136) (end -4.5593 19.9136) (angle -90) (layer Dwgs.User) (width 0.00508))
+    (fp_arc (start 1.6256 -19.9136) (end 0.762 -19.9136) (angle -90) (layer Eco1.User) (width 0.00508))
+    (fp_arc (start -1.6256 -19.9136) (end -1.6256 -19.05) (angle -90) (layer Eco1.User) (width 0.00508))
+    (fp_arc (start 2.1717 19.9136) (end 3.0353 19.9136) (angle -90) (layer Eco1.User) (width 0.00508))
+    (fp_arc (start 5.4229 19.9136) (end 5.4229 19.05) (angle -90) (layer Eco1.User) (width 0.00508))
+    (fp_arc (start -2.1717 19.9136) (end -2.1717 19.05) (angle -90) (layer Eco1.User) (width 0.00508))
+    (fp_arc (start -5.4229 19.9136) (end -4.5593 19.9136) (angle -90) (layer Eco1.User) (width 0.00508))
     (fp_line (start 3.0353 19.05) (end -3.0353 19.05) (layer Eco1.User) (width 0.0254))
     (fp_line (start 3.0353 21.59) (end 3.0353 19.05) (layer Eco1.User) (width 0.0254))
     (fp_line (start 4.5593 21.59) (end 3.0353 21.59) (layer Eco1.User) (width 0.0254))
@@ -247,10 +247,10 @@
       (solder_mask_margin -0.3556))
     (pad 28 thru_hole roundrect (at 8.509 -16.51 180) (size 1.905 2.032) (drill 1.524 (offset 0.1778 0)) (layers *.Cu *.Mask) (roundrect_rratio 0.1)
       (solder_mask_margin -0.3556))
-    (model ${KIPRJMOD}/000_LOCAL.pretty/3d/dip28_pcb_carrier_v4.step
-      (offset (xyz 0 0 -3.9))
+    (model ${KIPRJMOD}/000_LOCAL.pretty/3d/pcb2molex8878.step
+      (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 -90))
+      (rotate (xyz 0 0 90))
     )
   )
 
