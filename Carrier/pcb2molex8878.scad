@@ -31,7 +31,7 @@ contacts_x = 34.8;
 contacts_y = 2.6; // cuts inwards from main_y
 
 // pcb
-pcb_x = (variant=="original") ? 37.5 : main_x-1.5;     // leave walls > 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
+pcb_x = (variant=="original") ? 37.5 : main_x-1.6;     // leave walls > 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
 pcb_y = (variant=="original") ? 15.3 : 16.3;
 pcb_z = 1.8;      // thickness of pcb (nominal 1.6, plus 0.2)
 pcb_elev = 2.0;   // bottom of pcb above socket floor
