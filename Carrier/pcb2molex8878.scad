@@ -12,41 +12,41 @@
 
 // -------------------------------------------------------------------------
 // UNITS: mm
+// VARIANTS: chamfer pin unpolarized legacy
 
 // Which version of the carrier to produce:
-// "original" - fits REX_bkw_c8 and original Teeprom
+// "legacy" - fits REX_bkw_c8 and original Teeprom
 // "pin" - fits REX_bkw_c9
-// "chamfer" - fits REX_bkw_c10 and current Teeprom
-// "no_polarity" - fits original REX1 & FigTroniX with ends sanded down
-variant = "chamfer";
+// "chamfer" - fits REX_bkw_c10 and current Teeprom - *current default*
+// "unpolarized" - fits original REX1 & FigTroniX with ends sanded down
+variant = "chamfer"; // Just the default. Makefile overrides this with -D and generates all variants.
 
 // main outside box
 main_x = 39.8;    // 050395288_sd.pdf DIM. F
-main_y = 16.7;
+main_y = 16.8;
 main_z = 7.48;
 
 // cut-away clearance around socket contacts
-// so that empty carrier can not get trapped
-contacts_x = 34.8;
-contacts_y = 2.6; // cuts inwards from main_y
+contacts_x = 34.5; // 14 * 0.1" pins, minus 1/3 to 2/3 pin
+trunk_y = 14.1; // max width of trunk - distance between opposing contacts in empty socket
 
 // pcb
-pcb_x = (variant=="original") ? 37.5 : main_x-1.6;     // leave walls > 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
-pcb_y = (variant=="original") ? 15.3 : 16.3;
-pcb_z = 1.8;      // thickness of pcb (nominal 1.6, plus 0.2)
+pcb_x = (variant=="legacy") ? 37.5 : main_x-1.5;     // leave walls >= 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
+pcb_y = (variant=="legacy") ? 15.3 : 16.1;
+pcb_z = 1.8;      // thickness of pcb (nominal 1.6 plus 0.2)
 pcb_elev = 2.0;   // bottom of pcb above socket floor
 
 // cavity in bottom tray for backside components and through-hole legs 
 pocket_x = 36;
-pocket_y = 12.5;  // allow tsop48, leave walls >= 0.7
-pocket_z = 1.2;   // allow tsop48, leave floor >= 0.7
+pocket_y = 12.5;  // allows tsop48, leaves walls = 0.8
+pocket_z = 1.2;   // allows tsop48, leaves floor = 0.8
 
-// wedge corner posts - pins 1/28 end
-cpwedge_xwide = 1.6;      // thick end of wedge
+// wedge-shaped corner posts at pin1 & pin28
+cpwedge_xwide = 1.7;      // thick end of wedge
 cpwedge_xnarrow = 1.1;    // thin end of wedge
 cpwedge_y = 21.2;         // total Y outside end to end both posts
 
-// box corner posts - pins 14/15 end
+// box-shaped corner posts at pin15 & pin15
 cpbox_x = 2.1;    // X len of 1 post
 cpbox_y = 1.8;    // Y width of 1 post
 cpbox_xe = 0.3;   // X extends past main_x
@@ -69,21 +69,19 @@ ret_y = 10;       // length
 ret_z = 2;        // height
 
 // label text
-text_z = 0.1;             // depth into surface
-text_v = "pcb2molex8878"; // value
+//text_z = 0.25;            // depth into surface
+//text_v = "pcb2molex8878"; // value
 
-// pcb polarity pin (used if pcb_ptype=1)
-pin_x = 14.53;                    // center X
-pin_y = 3.4;                      // center Y
+// pcb polarity pin
+pin_x = 14.53;                    // location center X
+pin_y = 3.4;                      // location center Y
 pin_z = pcb_elev+pcb_z-0.2;       // top of pin, 0.2 below top of pcb
-pin_d = (variant=="original") ? 2.6 : 2;       // diameter, 0.2 less than hole in pcb
+pin_d = (variant=="legacy") ? 2.6 : 2;       // diameter, 0.2 less than hole in pcb
 
-// pcb polarity chamfer (used if pcb_ptype=2)
-pcb_polarity_chamfer = 1.6;   // pin 1 corner polarity chamfer
+pcb_polarity_chamfer = (variant=="chamfer") ? pcb_x/2-contacts_x/2 : 0; // pin 1 corner polarity chamfer
 
-o = 0.1;  // overcut - extend cut shapes beyond the outside surfaces they cut from, prevent zero-thickness planes in previews, renders, & mesh outputs
-corner_wall_chamfer = 0.5; // size of chamfers on inside side walls - acommodate mill radius in pcb edge cuts
-extra_trap = (variant=="chamfer"||variant=="no_polarity") ? 0.2 : 0; // leave this much of the side walls on the pin1 & pin28 corner posts, even though the wall is too thin, to provide a little more secure side-side trapping of the pcb on that end, when there is no pin to do it
+o = 0.1;  // overcut - extend cut shapes beyond the outside surfaces they cut from to prevent zero-thickness planes in previews, renders, & mesh outputs
+legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the legacy variant - acommodate mill radius in pcb edge cuts
 
 // ===============================================================
 
@@ -154,9 +152,9 @@ difference(){
     translate([0,0,pcb_elev])
       cube([pcb_x,pcb_y,main_z],center=true);
 
-    if(variant=="original"){
+    if(variant=="legacy"){
       // chamfer inside edge of original style thick side walls 
-      c = corner_wall_chamfer+o*2;
+      c = legacy_side_wall_chamfer+o*2;
       mirror_copy([1,0,0]) // pins 1 & 28
         mirror_copy([0,1,0]) // pin 14
           translate([contacts_x/2-o,pcb_y/2-o,-main_z/2+pcb_elev]) // pin 15
@@ -167,14 +165,43 @@ difference(){
                 [0,c]
               ]);
     } else {
-      // remove side walls for all other styles
-      c = main_x/2-cpwedge_xwide-contacts_x/2+o; // square large enough to cut the vertical walls from the corner posts
-      ce = (variant=="chamfer") ? pcb_z : 0; // offset elev for pin1 wall cut
-      translate([-main_x/2+cpwedge_xwide+extra_trap,-pcb_y/2-c/2,-main_z/2+pcb_elev+ce]) cube([c,c,main_z-pcb_elev+o]); // pin 1 wedge post
-      translate([-main_x/2+cpwedge_xwide+extra_trap,pcb_y/2-c/2,-main_z/2+pcb_elev]) cube([c,c,main_z-pcb_elev+o]); // pin 28 wedge post
-      mirror_copy ([0,1,0]) // pin 14 box corner post
-        translate([main_x/2+cpbox_xe-cpbox_x-c,pcb_y/2-c/2,-main_z/2+pcb_elev]) // pin 15 box corner post
-          cube([c,c,main_z-pcb_elev+o]);
+      // 3d-print services can't print walls thinner than 0.7mm,
+      // so here we shave them off the corner posts, mostly.
+      
+      // pin1 & pin28 above pcb
+      translate([-main_x/2+cpwedge_xwide,-main_y/2-o,-main_z/2+pcb_elev+pcb_z])
+        cube([2,main_y+o*2,main_z]);
+
+      // pin1 & pin28 at pcb depends on chamfer
+      _iwx1 = main_x/2-contacts_x/2-cpwedge_xwide;
+      translate([-main_x/2+cpwedge_xwide,main_y/2+o+pcb_polarity_chamfer,-main_z/2+pcb_elev]) 
+        rotate([90,0,0])
+          linear_extrude(main_y+o*2)
+            polygon([
+              [_iwx1,0],
+              [_iwx1+o,0],
+              [_iwx1+o,pcb_z+o],
+              [0,pcb_z+o],
+              [0,pcb_z]
+            ]);
+
+      // pin14 & pin15 above pcb
+      translate([main_x/2-2+cpbox_xe-cpbox_x,-main_y/2-o,-main_z/2+pcb_elev+pcb_z])
+        cube([2,main_y+o*2,main_z]);
+      // pin14 & pin15 at pcb
+      _iwx2 = (main_x/2+cpbox_xe-cpbox_x)-contacts_x/2;
+      translate([contacts_x/2,main_y/2+o,-main_z/2+pcb_elev]) 
+        rotate([90,0,0])
+          linear_extrude(main_y+o*2)
+            polygon([
+              [-o,0],
+              [-o,pcb_z+o],
+              [_iwx2,pcb_z+o],
+              [_iwx2,pcb_z],
+              [0,0,]
+            ]);
+
+
     }
     
     // pocket for backside components
@@ -183,17 +210,22 @@ difference(){
     
     // clearance for socket contacts
     mirror_copy([0,1,0])
-      translate([0,-main_y/2,0])
-        cube([contacts_x,contacts_y,main_z+o*2],center=true);
+      translate([-contacts_x/2,trunk_y/2,-main_z/2-o])
+        cube([contacts_x,main_y/2-trunk_y/2+o,main_z+o*2]);
     
     // notch in wing 1 / pin 1/28 end
     translate([-main_x/2-wing_x-o,-blade_thickness/2,main_z/2-blade_thickness+o])
       cube([wing_x-blade_xwide+o,blade_thickness,wing_thickness+o*2]);
 
+// not coming out clear enough
     // engrave label into floor
-    translate([0,0,-main_z/2+pocket_floor-text_z])
-      linear_extrude(text_z+o)
-        text(text_v,size=3,halign="center");
+//    translate([0,0,-main_z/2+pocket_floor-text_z])
+//      linear_extrude(text_z+o)
+//        text(text_v,size=3,halign="center");
+// kinda neat, include the variant in the label, but make better variant names
+//    translate([0,-4,-main_z/2+pocket_floor-text_z])
+//      linear_extrude(text_z+o)
+//        text(variant,size=3,halign="center");
 
   }
 }
@@ -218,7 +250,7 @@ if(variant=="chamfer")
         [0,pcb_polarity_chamfer],
         [pcb_polarity_chamfer,0]
       ]);
-else if(variant!="no_polarity")
+else if(variant!="unpolarized")
   translate([-pin_x,-pin_y,-main_z/2+pocket_floor]){
     cylinder(h=pin_z-pocket_floor,d=pin_d,$fn=18); // pin
     cylinder(h=0.2,d1=pin_d+2,d2=pin_d,$fn=18); // fillet
