@@ -106,7 +106,7 @@
     (diff_pair_gap 0.254)
   )
 
-  (module 000_LOCAL:pcb2molex8878 (layer Top) (tedit 5D5E44BB) (tstamp 5D5CFB8F)
+  (module 000_LOCAL:pcb2molex8878 (layer Top) (tedit 5D6DCB02) (tstamp 5D5CFB8F)
     (at 147.2184 99.187)
     (descr "Castellated edge contacts to fit Molex 8878 Socket")
     (solder_mask_margin -0.28)
@@ -226,7 +226,7 @@
     (pad 1 thru_hole roundrect (at -8.6 -16.51) (size 1.8 1.6) (drill 1.6 (offset 0.1 0)) (layers *.Cu *.Mask) (roundrect_rratio 0.1)
       (solder_mask_margin -0.19))
     (model ${KIPRJMOD}/000_LOCAL.pretty/3d/pcb2molex8878.step
-      (at (xyz 0 0 0))
+      (offset (xyz 0 0 -0.1))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 90))
     )
