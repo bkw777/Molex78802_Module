@@ -15,4 +15,4 @@ $(model)_%.stl: $(model).scad
 	$(openscad) -D'variant="$(*)"' -o $(@) $(model).scad
 
 clean:
-	rm -f $(model)_*.stl
+	for i in $(variants) ;do rm -f $(model)_$${i}.stl ;done

@@ -34,12 +34,12 @@ trunk_y = 14.1; // max width of trunk - distance between opposing contacts in em
 pcb_x = (variant=="legacy") ? 37.5 : main_x-1.5;     // leave walls >= 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
 pcb_y = (variant=="legacy") ? 15.3 : 16.1;
 pcb_z = 1.8;      // thickness of pcb (nominal 1.6 plus 0.2)
-pcb_elev = 2.0;   // bottom of pcb above socket floor
+pcb_elev = 2.2;   // bottom of pcb above socket floor, can go as low as 1.9
 
 // cavity in bottom tray for backside components and through-hole legs 
 pocket_x = 36;
 pocket_y = 12.5;  // allows tsop48, leaves walls = 0.8
-pocket_z = 1.2;   // allows tsop48, leaves floor = 0.8
+pocket_z = 1.2;   // allows tsop48, leaves floor = 1.0
 
 // wedge-shaped corner posts at pin1 & pin28
 cpwedge_xwide = 1.7;      // thick end of wedge
@@ -126,12 +126,12 @@ difference(){
             [cpwedge_xnarrow,cpwedge_y/2-main_y/2],
             [cpwedge_xwide,0]
           ]);
-    
+
     // box-shaped corner posts at pin14 & pin15
     mirror_copy([0,1,0]) // pin 14
       translate([main_x/2-cpbox_x+cpbox_xe,cpbox_yo/2-cpbox_y,-main_z/2]) // pin 15
         cube([cpbox_x,cpbox_y,main_z]);
-    
+
     // finger pull wings
     mirror_copy([1,0,0]) // wing 1 / pin 1/28 end
       translate([main_x/2+wing_x/2,0,main_z/2-wing_thickness/2]) // wing 2 / pin 14/15 end
@@ -167,7 +167,7 @@ difference(){
     } else {
       // 3d-print services can't print walls thinner than 0.7mm,
       // so here we shave them off the corner posts, mostly.
-      
+
       // pin1 & pin28 above pcb
       translate([-main_x/2+cpwedge_xwide,-main_y/2-o,-main_z/2+pcb_elev+pcb_z])
         cube([2,main_y+o*2,main_z]);
@@ -203,16 +203,16 @@ difference(){
 
 
     }
-    
+
     // pocket for backside components
     translate([0,0,pcb_elev-pocket_z])
       cube([pocket_x,pocket_y,main_z],center=true);
-    
+
     // clearance for socket contacts
     mirror_copy([0,1,0])
       translate([-contacts_x/2,trunk_y/2,-main_z/2-o])
         cube([contacts_x,main_y/2-trunk_y/2+o,main_z+o*2]);
-    
+
     // notch in wing 1 / pin 1/28 end
     translate([-main_x/2-wing_x-o,-blade_thickness/2,main_z/2-blade_thickness+o])
       cube([wing_x-blade_xwide+o,blade_thickness,wing_thickness+o*2]);
