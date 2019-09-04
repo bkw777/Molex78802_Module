@@ -68,10 +68,6 @@ ret_x = 1;        // thick end
 ret_y = 10;       // length
 ret_z = 2;        // height
 
-// label text
-//text_z = 0.25;            // depth into surface
-//text_v = "pcb2molex8878"; // value
-
 // pcb polarity pin
 pin_x = 14.53;                    // location center X
 pin_y = 3.4;                      // location center Y
@@ -107,11 +103,30 @@ module blade(){
         ]);
 }
 
+
+// entire model
+// collect everything into a union just so it forms a single object,
+// so that it can be selected for conversion and export in freecad.
+//
+// Dirty hack trick here....
+//
+// Currently, group() is just an undocumented alias for union(), used internally by some other commands,
+// and you are really supposed to use union() not group().
+//
+// Intentionally use group() everywhere in the file, and do not use union() anywhere,
+// except this one usage here for the top-level outer-most object.
+// This ends up having the result that when the .scad file is imported into FreeCAD,
+// there are many Group### objects, but only a single "union" object.
+// This way the name the top-level object will get is predictable (union)
+// when the scad file is imported in freecad, which allows us to write a macro
+// that selects "union" to export as STEP for KiCAD non-interactively from the Makefile.
+union () {
+
 // most of the body
 difference(){
 
   // === ADD Shapes ===
-  union(){
+  group(){
 
     // main outer box
     cube([main_x,main_y,main_z],center=true);
@@ -147,7 +162,7 @@ difference(){
   }
 
   // === SUBTRACT Shapes ===
-  union(){
+  group(){
     // main cavity for pcb
     translate([0,0,pcb_elev])
       cube([pcb_x,pcb_y,main_z],center=true);
@@ -217,16 +232,6 @@ difference(){
     translate([-main_x/2-wing_x-o,-blade_thickness/2,main_z/2-blade_thickness+o])
       cube([wing_x-blade_xwide+o,blade_thickness,wing_thickness+o*2]);
 
-// not coming out clear enough
-    // engrave label into floor
-//    translate([0,0,-main_z/2+pocket_floor-text_z])
-//      linear_extrude(text_z+o)
-//        text(text_v,size=3,halign="center");
-// kinda neat, include the variant in the label, but make better variant names
-//    translate([0,-4,-main_z/2+pocket_floor-text_z])
-//      linear_extrude(text_z+o)
-//        text(variant,size=3,halign="center");
-
   }
 }
 
@@ -255,3 +260,7 @@ else if(variant!="unpolarized")
     cylinder(h=pin_z-pocket_floor,d=pin_d,$fn=18); // pin
     cylinder(h=0.2,d1=pin_d+2,d2=pin_d,$fn=18); // fillet
   }
+
+}  // union
+
+
