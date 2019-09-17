@@ -17,7 +17,7 @@
 // Which version of the carrier to produce:
 // "legacy" - fits REX_bkw_c8 and original Teeprom
 // "pin" - fits REX_bkw_c9
-// "chamfer" - fits REX_bkw_c10 and current Teeprom - *current default*
+// "chamfer" - fits REX_bkw_c11 and current Teeprom - *current default*
 // "unpolarized" - fits original REX1 & FigTroniX with ends sanded down
 variant = "chamfer"; // Just the default. Makefile overrides this with -D and generates all variants.
 
@@ -46,7 +46,7 @@ cpwedge_xwide = 1.7;      // thick end of wedge
 cpwedge_xnarrow = 1.1;    // thin end of wedge
 cpwedge_y = 21.2;         // total Y outside end to end both posts
 
-// box-shaped corner posts at pin15 & pin15
+// box-shaped corner posts at pin14 & pin15
 cpbox_x = 2.1;    // X len of 1 post
 cpbox_y = 1.8;    // Y width of 1 post
 cpbox_xe = 0.3;   // X extends past main_x
@@ -64,7 +64,7 @@ wing_x = 3.2;             // extend past main_x
 wing_thickness = 1.2;
 
 // pcb retainer wedges
-ret_x = 1;        // thick end
+ret_x = 1;        // overhang
 ret_y = 10;       // length
 ret_z = 2;        // height
 
@@ -76,7 +76,7 @@ pin_d = (variant=="legacy") ? 2.6 : 2;       // diameter, 0.2 less than hole in 
 
 pcb_polarity_chamfer = (variant=="chamfer") ? pcb_x/2-contacts_x/2 : 0; // pin 1 corner polarity chamfer
 
-o = 0.1;  // overcut - extend cut shapes beyond the outside surfaces they cut from to prevent zero-thickness planes in previews, renders, & mesh outputs
+o = 0.1;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
 legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the legacy variant - acommodate mill radius in pcb edge cuts
 
 // ===============================================================
@@ -106,20 +106,20 @@ module blade(){
 
 // entire model
 // collect everything into a union just so it forms a single object,
-// so that it can be selected for conversion and export in freecad.
+// so that it can be selected for conversion and export in FreeCAD.
 //
 // Dirty hack trick here....
 //
-// Currently, group() is just an undocumented alias for union(), used internally by some other commands,
-// and you are really supposed to use union() not group().
+// Currently in OpenSCAD, group() is just an undocumented alias for union(), used internally by some other commands.
+// You are really supposed to use union() not group().
 //
-// Intentionally use group() everywhere in the file, and do not use union() anywhere,
-// except this one usage here for the top-level outer-most object.
+// We are intentionally using group() everywhere in this file,
+// except this one union() here for the top-level outer-most object.
 // This ends up having the result that when the .scad file is imported into FreeCAD,
-// there are many Group### objects, but only a single "union" object.
-// This way the name the top-level object will get is predictable (union)
-// when the scad file is imported in freecad, which allows us to write a macro
-// that selects "union" to export as STEP for KiCAD non-interactively from the Makefile.
+// there are many "Group###" objects, but only a single "union" object.
+// This way when the .scad file is imported into FreeCAD,
+// the top-level object will get a predictable label ("union"),
+// which makes it possible for scad-to-step.py to generate a STEP file for KiCAD non-interactively from the Makefile.
 union () {
 
 // most of the body
