@@ -8,6 +8,6 @@ Errata for the original data sheets.
 
 * 050395288_sd.pdf
   The data sheet for the carrier has a drawing error where DIM.D and DIM.F both line up with the same feature,
-  the outside edge of the left end, and no dimension lines line up with the recessed edge on the left side.
+  the outside edge of the left end, and no dimension lines up with the recessed edge on the left side.
   The numbers in the chart show that DIM.D is the outside edge, and DIM.F is the recessed edge.
   The corrected pdf moves the left drawing line for DIM.F slightly to the right to line up with the recessed edge on the left side.
