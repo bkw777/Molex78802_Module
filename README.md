@@ -7,7 +7,7 @@ https://photos.app.goo.gl/dKxuP3g76Du1FV3n8
 
 https://photos.app.goo.gl/zynHU4LSpd5BZBYC9
 
-http://tandy.wiki/pcb2molex8878
+http://tandy.wiki/pcb2molex8878  
 http://tandy.wiki/Teeprom  
 http://tandy.wiki/REX  
 
