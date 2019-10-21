@@ -2,7 +2,7 @@
 # Brian K. White - b.kenyon.w@gmail.com
 
 model = pcb2molex8878
-variants = max bump chamfer pin unpolarized legacy
+variants = max bump chamfer pin legacy
 default = max
 
 openscad = openscad-nightly
