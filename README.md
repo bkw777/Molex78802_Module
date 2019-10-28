@@ -1,8 +1,23 @@
-# pcb2molex8878 - "max" version
-PCB and 3d-printable model to fit in the Molex 8878 DIP-28 socket found in some vintage computers.
-![](pcb2molex8878.jpg)
+# pcb2molex8878
+Matched PCB template and 3d-printable carrier to fit in the Molex DIP-28 socket found in some vintage computers.
 
-This variant maximizes the usable pcb real-estate, on both top & bottom surfaces.  
+There are a few different versions to suit different needs.
+
+## "chamfer" version
+This is the default variant.  
+![](pcb2molex8878_chamfer.png)
+
+## "max" version
+This variant provides the maximum usable pcb real-estate, on both top & bottom surfaces.  
+![](pcb2molex8878_max.png)
+
+## "bump" version
+![](pcb2molex8878_bump.png)
+
+## "pin" version
+![](pcb2molex8878_pin.png)
+
+## more info
 https://photos.app.goo.gl/dKxuP3g76Du1FV3n8
 
 https://photos.app.goo.gl/zynHU4LSpd5BZBYC9

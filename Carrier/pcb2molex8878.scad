@@ -20,16 +20,17 @@
 // "chamfer" - fits REX_bkw_c11 and current Teeprom - *current default*
 // "bump" - carrier wall has a hole for a male polarity bump on a pcb edge
 // "max" - maximum usable pcb real-estate
-variant = "max"; // Just the default. Makefile overrides this with -D
+variant = "chamfer"; // Just the default. Makefile overrides this with -D
 
 // Original REX1 can use the "bump" version, if you are willing to sand the pcb edges down a little.
 
 // PCB dimensions are derived from a mix of constraints.
 
 // PCB main outside X,Y dimensions are ultimately derived from the inside of the Molex 8878 socket.
-// Socket minus carrier body minus clearace = PCB X,Y
+// Socket interior, minus fitment clearance, minus carrier body, minus fitment clearace = PCB X,Y
 // Then the chamfer on the PCB is derived from the PCB X dim and the edge of the pin1 contact.
 // Then the chamfer in the carrier is derived from the chamfer on the PCB, minus clearance.
+
 
 _fc = 0.1;  // fitment clearance
 
@@ -137,6 +138,7 @@ legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the
 
 $fn=18; // arc smoothness
 
+hide_pcb = false;  // overridden by Makefile, hide %pcb() so that scad-to-step.py only sees the carrier object
 
 // Display some calculated values in the console,
 // so that it's easy to copy them to KiCAD,
@@ -210,7 +212,7 @@ module pcb () {
         translate([-_px/2,-_lpy/2,-main_z/2+_pe])
           cube([_px,_lpy,_pz]);
     }
-    
+
     group(){ //REMOVE
       // castellated edge contacts
       mirror_copy([0,1,0])
@@ -254,23 +256,7 @@ module pcb () {
   }
 }
 
-// entire model
-// collect everything into a union just so it forms a single object,
-// so that it can be selected for conversion and export in FreeCAD.
-//
-// Dirty hack trick here....
-//
-// Currently in OpenSCAD, group() is just an undocumented alias for union(), used internally by some other commands.
-// You are really supposed to use union() not group().
-//
-// We are intentionally using group() everywhere in this file,
-// except this one union() here for the top-level outer-most object.
-// This ends up having the result that when the .scad file is imported into FreeCAD,
-// there are many "Group###" objects, but only a single "union" object.
-// This way when the .scad file is imported into FreeCAD,
-// the top-level object will get a predictable label ("union"),
-// which makes it possible for scad-to-step.py to generate a STEP file for KiCAD non-interactively from the Makefile.
-//color("lightgray")
+module carrier () {
 union () {
 
 // most of the body
@@ -331,7 +317,7 @@ difference(){
                 [0,lswcs]
               ]);
     } else if (variant=="max") {
-      
+
     } else {
       // 3d-print services can't print walls thinner than 0.7mm,
       // so here we shave them off the corner posts, mostly.
@@ -472,8 +458,23 @@ if(variant=="max"){
   translate([pcb_x/2+prong_drill/2,-_py/2+prong_w+_fc,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_drill);
 }
 }  // union
+}  // carrier
 
-// pcb
-//translate([0,20,0])
-//color("green")
-%pcb();
+////////////////////////////////////////////////////////////////////////////////
+
+// Makefile overrides hide_pcb, and pcb_move_* to generate pngs for README.md
+pcb_move_x = 0;
+pcb_move_y = 0;
+pcb_move_z = 0;
+pcb_color = "none";
+if(!hide_pcb){
+  translate([pcb_move_x,pcb_move_y,pcb_move_z]){
+    if(pcb_color!="none") color(pcb_color) pcb();
+    else %pcb();
+  }
+}
+
+// Makefile overrides carrier_color to generate pngs for README.md
+carrier_color = "none";
+if(carrier_color!="none") color(carrier_color) carrier();
+else carrier();
