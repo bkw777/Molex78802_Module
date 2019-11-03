@@ -9,6 +9,7 @@ This is the default variant.
 
 ## "max" version
 This variant provides the maximum usable pcb real-estate, on both top & bottom surfaces.  
+It is not tested or proven yet.
 ![](pcb2molex8878_max.png)
 
 ## "bump" version
@@ -18,10 +19,6 @@ This variant provides the maximum usable pcb real-estate, on both top & bottom s
 ![](pcb2molex8878_pin.png)
 
 ## more info
-https://photos.app.goo.gl/dKxuP3g76Du1FV3n8
-
-https://photos.app.goo.gl/zynHU4LSpd5BZBYC9
-
 http://tandy.wiki/pcb2molex8878  
 http://tandy.wiki/Teeprom  
 http://tandy.wiki/REX  
