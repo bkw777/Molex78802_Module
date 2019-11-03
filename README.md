@@ -4,12 +4,12 @@ Matched PCB template and 3d-printable carrier to fit in the Molex DIP-28 socket 
 There are a few different versions to suit different needs.
 
 ## "chamfer" version
-This is the default variant.  
+This is the default version.  
 ![](pcb2molex8878_chamfer.png)
 
 ## "max" version
-This variant provides the maximum usable pcb real-estate, on both top & bottom surfaces.  
-It is not tested or proven yet.
+This version provides the maximum usable pcb real-estate, on both top & bottom surfaces.  
+This version is not tested yet.
 ![](pcb2molex8878_max.png)
 
 ## "bump" version
