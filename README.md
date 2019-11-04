@@ -9,7 +9,6 @@ This is the default version.
 
 ## "max" version
 This version provides the maximum usable pcb real-estate, on both top & bottom surfaces.  
-This version is not tested yet.
 ![](pcb2molex8878_max.png)
 
 ## "bump" version
