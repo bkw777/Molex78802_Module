@@ -131,14 +131,14 @@ _pbh = (variant=="bump"||variant=="max") ? main_x/2-pcb_x/2+_fc/2 : 0;  // bump 
 
 // corner prongs
 prong_w = (variant=="max") ? 2 : 0;
-prong_drill = 0.7; // half-hole cut in side of prong
+prong_cyl = (main_x-pcb_x)/2;  // aka _pbh - _fc/2
 
 o = 0.1;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
 legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the legacy variant - acommodate mill radius in pcb edge cuts
 
 $fn=18; // arc smoothness
 
-hide_pcb = false;  // overridden by Makefile, hide %pcb() so that scad-to-step.py only sees the carrier object
+hide_pcb = true;  // overridden by Makefile, hide %pcb() so that scad-to-step.py only sees the carrier object
 
 // Display some calculated values in the console,
 // so that it's easy to copy them to KiCAD,
@@ -195,6 +195,10 @@ module pcb () {
               [-_pbh,0],
               [-_pbh,_bw],
               [0,_bw],
+              [0,_py-prong_w*3],
+              [-_pbh,_py-prong_w*3],
+              [-_pbh,_py-prong_w*2],
+              [0,_py-prong_w*2],
               [0,_py-prong_w],
               [-_pbh,_py-prong_w],
               [-_pbh,_py],
@@ -202,7 +206,11 @@ module pcb () {
               [_px,_py],
               [_px+_pbh,_py],
               [_px+_pbh,_py-prong_w],
-              [_px,_py-prong_w],
+              [_px,_py-prong_w],      
+              [_px,_py/2+prong_w/2],
+              [_px+_pbh,_py/2+prong_w/2],
+              [_px+_pbh,_py/2-prong_w/2],
+              [_px,_py/2-prong_w/2],
               [_px,prong_w],
               [_px+_pbh,prong_w],
               [_px+_pbh,0],
@@ -243,10 +251,23 @@ module pcb () {
             }
       // half-holes drilled in the inner sides of the prongs
       if (variant=="max"){
-        translate([-_px/2-prong_drill/2,-_py/2+_pbw,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=prong_drill);
-        translate([-_px/2-prong_drill/2,_py/2-prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=prong_drill);
-        translate([_px/2+prong_drill/2,_py/2-prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=prong_drill);
-        translate([_px/2+prong_drill/2,-_py/2+prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=prong_drill);
+        translate([-_px/2-_pbh/2,-_py/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        translate([-_px/2-_pbh/2,-_py/2+_pbw,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+
+        translate([-_px/2-_pbh/2,_py/2-prong_w*3,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        translate([-_px/2-_pbh/2,_py/2-prong_w*2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+
+        translate([-_px/2-_pbh/2,_py/2-prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        translate([-_px/2-_pbh/2,_py/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+
+        translate([_px/2+_pbh/2,_py/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        translate([_px/2+_pbh/2,_py/2-prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+
+        translate([_px/2+_pbh/2,prong_w/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        translate([_px/2+_pbh/2,-prong_w/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+
+        translate([_px/2+_pbh/2,-_py/2+prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        translate([_px/2+_pbh/2,-_py/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
       }
       // mill radius
       if (variant=="bump")
@@ -383,32 +404,13 @@ difference(){
 
     // holes in end-walls
 
-    // "max" has a complicated pcb shape
     if(variant=="max"){
-      translate([-_px/2,-pcb_y/2,-main_z/2+pcb_elev])
-        linear_extrude(pcb_z)
-          polygon([
-            [0,0],             // pin1 inside corner
-            [-_pbh-o,0],       // pin1 prong end
-            [-_pbh-o,_pbw+_fc],
-            [-_mr/2,_pbw+_fc],  // mill radius
-            [0,_pbw+_mr+_fc],    // mill radius
-            [0,pcb_y-prong_w-_mr-_fc],   // mill radius
-            [-_mr/2,pcb_y-prong_w-_fc], // mill radius
-            [-_pbh-o,pcb_y-prong_w-_fc],
-            [-_pbh-o,pcb_y],         // pin28 prong end
-            [0,pcb_y],               // pin28 inside corner
-            [_px,pcb_y],             // pin15 inside corner
-            [_px+_pbh+o,pcb_y],      // pin15 prong edge
-            [_px+_pbh+o,pcb_y-prong_w-_fc],
-            [_px+_mr/2,pcb_y-prong_w-_fc], // mill radius
-            [_px,pcb_y-prong_w-_mr-_fc],   // mill radius 
-            [_px,prong_w+_mr+_fc],   // mill radius
-            [_px+_mr/2,prong_w+_fc], // mill radius
-            [_px+_pbh+o,prong_w+_fc],
-            [_px+_pbh+o,0],          // pin14 prong end
-            [_px,0]                  // pin14 inside corner
-          ]);
+      translate([-main_x/2-o,-pcb_y/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,_pbw,pcb_z]);
+      translate([-main_x/2-o,pcb_y/2-prong_w,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
+      translate([-main_x/2-o,pcb_y/2-prong_w*3,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
+      translate([pcb_x/2-o,pcb_y/2-prong_w,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
+      translate([pcb_x/2-o,-prong_w/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
+      translate([pcb_x/2-o,-pcb_y/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
     }
 
    if(variant=="bump"){
@@ -452,10 +454,24 @@ if(variant=="pin" || variant=="legacy")
     cylinder(h=0.2,d1=pin_d+2,d2=pin_d); // fillet
 }
 if(variant=="max"){
-  translate([-pcb_x/2-prong_drill/2,-pcb_y/2+_pbw+_fc,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_drill);
-  translate([-pcb_x/2-prong_drill/2,_py/2-prong_w-_fc,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_drill);
-  translate([pcb_x/2+prong_drill/2,_py/2-prong_w-_fc,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_drill);
-  translate([pcb_x/2+prong_drill/2,-_py/2+prong_w+_fc,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_drill);
+  // Intentionally using _py (pcb edge) instead of pcb_y (carrier edge) here to make the fit tight
+  translate([-pcb_x/2-prong_cyl/2,-_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  translate([-pcb_x/2-prong_cyl/2,-_py/2+_pbw,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+
+  translate([-pcb_x/2-prong_cyl/2,_py/2-prong_w*3,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  translate([-pcb_x/2-prong_cyl/2,_py/2-prong_w*2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+
+  translate([-pcb_x/2-prong_cyl/2,_py/2-prong_w,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  translate([-pcb_x/2-prong_cyl/2,_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+
+  translate([pcb_x/2+prong_cyl/2,_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  translate([pcb_x/2+prong_cyl/2,_py/2-prong_w,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+
+  translate([pcb_x/2+prong_cyl/2,prong_w/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  translate([pcb_x/2+prong_cyl/2,-prong_w/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+
+  translate([pcb_x/2+prong_cyl/2,-_py/2+prong_w,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  translate([pcb_x/2+prong_cyl/2,-_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
 }
 }  // union
 }  // carrier
