@@ -20,7 +20,7 @@ $(model)_%.stl: $(model).scad
 
 # Generate .png for README.md
 $(model)_%.png: $(model).scad
-	$(openscad) -D'variant="$(*)"' -D'pcb_move_z=20' -D'pcb_color="green"' -D'carrier_color="lightgrey"' --colorscheme DeepOcean --imgsize 1024,768 --viewall -o $(@) $(model).scad
+	$(openscad) -D'variant="$(*)"' -D'hide_pcb=false' -D'pcb_move_z=20' -D'pcb_color="green"' -D'carrier_color="lightgrey"' --colorscheme DeepOcean --imgsize 1024,768 --viewall -o $(@) $(model).scad
 #	$(openscad) -D'variant="$(*)"' -D'pcb_move_y=20' --colorscheme DeepOcean --imgsize 1024,768 --camera=0,0,0,0,0,90,0 --viewall --autocenter -o $(model)_$(*)_02.png $(model).scad
 #	$(openscad) -D'variant="$(*)"' --colorscheme DeepOcean --imgsize 1024,768 -o $(model)_$(*)_03.png $(model).scad
 #	$(openscad) -D'variant="$(*)"' --camera=0,0,0,90,0,0,0 --viewall --colorscheme DeepOcean --imgsize 1024,768 -o $(model)_$(*)_04.png $(model).scad
