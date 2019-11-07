@@ -156,7 +156,7 @@ if(variant=="pin" || variant=="legacy")
   echo("# Polarity Hole: X,Y,Diameter",pin_x,pin_y,pcb_polarity_hole_d);
 if(variant=="max")
   echo("# Prongs: Width,Height",prong_w,_pbh);
-echo("# Backside Pocket: Length,Width,Depth", (pocket_x>_px)?_px:pocket_x , (pocket_y>_py)?round(_py*10)/10:pocket_y , (pocket_z>pcb_elev)?pcb_elev:pocket_z );
+echo("# Backside Pocket: Length,Width,Depth", (pocket_x>_px)?_px-_fc:pocket_x-_fc , (pocket_y>_py)?round((_py-_fc)*10)/10:pocket_y-_fc , (pocket_z>pcb_elev)?pcb_elev:pocket_z );
 echo("#");
 echo("###################################################################");
 
