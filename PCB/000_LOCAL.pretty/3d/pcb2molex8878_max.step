@@ -1,7 +1,7 @@
 ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('FreeCAD Model'),'2;1');
-FILE_NAME('pcb2molex8878_max.step','2019-11-07T13:19:57',('FreeCAD'),(
+FILE_NAME('pcb2molex8878_max.step','2019-11-08T15:42:17',('FreeCAD'),(
     'FreeCAD'),'Open CASCADE STEP processor 7.3','FreeCAD','Unknown');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

@@ -41,7 +41,9 @@ main_y = 16.8;    // 050395288_sd.pdf: 16.64 / 015299282_sd.pdf: 16.89
 main_z = 7.48;    // neither pdf shows the carrier height nor the socket depth
 
 // pcb thickness - nominal 1.6
-_pz = 1.7; // realistic pcb thickness
+_pz = 1.7; // realistic pcb thickness nominal + 0.1
+// pcb thickness - nominal 0.8
+//_pz = 0.9; // realistic pcb thickness nominal + 0.1
 
 _mr = 0.836; // pcb edge cut mill radius (0.034")
 
@@ -50,7 +52,10 @@ pcb_x = (variant=="legacy") ? 37.5 : main_x-1.5;     // leave walls >= 0.7  ( (m
 pcb_y = (variant=="legacy") ? 15.3 : (variant=="max") ? main_y+0.002 : 16.1;
 pcb_z = _pz+_fc;
 
+// 1.6mm pcb
 pcb_elev = 2.4;   // bottom of pcb above socket floor. DON'T GO BELOW 1.9 !!!
+// 0.8mm pcb
+//pcb_elev = 2.8;   // bottom of pcb above socket floor. DON'T GO BELOW 1.9 !!!
 
 // Derived/calculated dimensions for the actual PCB
 _px = pcb_x - _fc;
@@ -91,6 +96,11 @@ wing_thickness = 1.2;
 ret_x = 1;        // overhang
 ret_y = 10;       // length
 ret_z = 2;        // height
+// narrow wedge
+//ret_y = 2;       // length
+//ret_z = main_z - pcb_elev - pcb_z; // height
+// with daughterboard
+//ret_z = main_z - pcb_elev - pcb_z - pcb_z; // height
 
 // castellated edge contacts
 // get the drill size & position values from the footprint in KiCAD
@@ -138,7 +148,7 @@ legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the
 
 $fn=18; // arc smoothness
 
-hide_pcb = true;  // overridden by Makefile, hide %pcb() so that scad-to-step.py only sees the carrier object
+hide_pcb = false;  // overridden by Makefile, hide %pcb() so that scad-to-step.py only sees the carrier object
 
 // Display some calculated values in the console,
 // so that it's easy to copy them to KiCAD,
@@ -154,9 +164,14 @@ if(variant=="bump"||variant=="max")
   echo("# Polarity Bump: Width,Height",_pbw,_pbh);
 if(variant=="pin" || variant=="legacy")
   echo("# Polarity Hole: X,Y,Diameter",pin_x,pin_y,pcb_polarity_hole_d);
-if(variant=="max")
+if(variant=="max"){
   echo("# Prongs: Width,Height",prong_w,_pbh);
-echo("# Backside Pocket: Length,Width,Depth", (pocket_x>_px)?_px-_fc:pocket_x-_fc , (pocket_y>_py)?round((_py-_fc)*10)/10:pocket_y-_fc , (pocket_z>pcb_elev)?pcb_elev:pocket_z );
+  echo("# Backside Pocket: Length,Width,Depth", _px, round(_py*10)/10, (pocket_z>pcb_elev)?pcb_elev:pocket_z );
+}else{
+  echo("# Backside Pocket: Length,Width,Depth", (pocket_x>_px)?_px-_fc:pocket_x-_fc , (pocket_y>_py)?round((_py-_fc)*10)/10:pocket_y-_fc , (pocket_z>pcb_elev)?pcb_elev:pocket_z );
+}
+//echo("#");
+//echo("# Daughterboard backside components:", main_z - _pe - _pz - _pz);
 echo("#");
 echo("###################################################################");
 
@@ -180,6 +195,10 @@ module blade(){
           [blade_xnarrow,blade_z-wing_thickness*2],
           [blade_xnarrow,0]
         ]);
+}
+
+module daughterboard () {
+  translate([0,0,_pz/2+main_z/2-_pz]) cube([_px,_py,_pz],center=true);
 }
 
 module pcb () {
@@ -494,3 +513,6 @@ if(!hide_pcb){
 carrier_color = "none";
 if(carrier_color!="none") color(carrier_color) carrier();
 else carrier();
+
+//color(pcb_color)
+//daughterboard();
