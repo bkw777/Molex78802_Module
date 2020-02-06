@@ -210,26 +210,30 @@ module pcb () {
         translate([-_px/2,-_py/2,-main_z/2+_pe])
           linear_extrude(_pz)
             polygon([
+              // begin pin1/pin28 end - pin1 corner
               [0,0],
               [-_pbh,0],
               [-_pbh,_bw],
               [0,_bw],
-              [0,_py-prong_w*3],
-              [-_pbh,_py-prong_w*3],
-              [-_pbh,_py-prong_w*2],
-              [0,_py-prong_w*2],
+              //  middle prong on pin1/pin28 end
+              //[0,_py-prong_w*3],
+              //[-_pbh,_py-prong_w*3],
+              //[-_pbh,_py-prong_w*2],
+              //[0,_py-prong_w*2],
               [0,_py-prong_w],
               [-_pbh,_py-prong_w],
               [-_pbh,_py],
               [0,_py],
+              // begin pin14/pin15 end - pin15 corner
               [_px,_py],
               [_px+_pbh,_py],
               [_px+_pbh,_py-prong_w],
-              [_px,_py-prong_w],      
-              [_px,_py/2+prong_w/2],
-              [_px+_pbh,_py/2+prong_w/2],
-              [_px+_pbh,_py/2-prong_w/2],
-              [_px,_py/2-prong_w/2],
+              [_px,_py-prong_w],
+              // middle prong on pin14/pin15 end
+              //[_px,_py/2+prong_w/2],
+              //[_px+_pbh,_py/2+prong_w/2],
+              //[_px+_pbh,_py/2-prong_w/2],
+              //[_px,_py/2-prong_w/2],
               [_px,prong_w],
               [_px+_pbh,prong_w],
               [_px+_pbh,0],
@@ -272,9 +276,10 @@ module pcb () {
       if (variant=="max"){
         translate([-_px/2-_pbh/2,-_py/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
         translate([-_px/2-_pbh/2,-_py/2+_pbw,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
-
-        translate([-_px/2-_pbh/2,_py/2-prong_w*3,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
-        translate([-_px/2-_pbh/2,_py/2-prong_w*2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+  
+        // middle prong on pin1/pin28 end
+        //translate([-_px/2-_pbh/2,_py/2-prong_w*3,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        //translate([-_px/2-_pbh/2,_py/2-prong_w*2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
 
         translate([-_px/2-_pbh/2,_py/2-prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
         translate([-_px/2-_pbh/2,_py/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
@@ -282,8 +287,9 @@ module pcb () {
         translate([_px/2+_pbh/2,_py/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
         translate([_px/2+_pbh/2,_py/2-prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
 
-        translate([_px/2+_pbh/2,prong_w/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
-        translate([_px/2+_pbh/2,-prong_w/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        // middle prong on pin14/pin15 end
+        //translate([_px/2+_pbh/2,prong_w/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
+        //translate([_px/2+_pbh/2,-prong_w/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
 
         translate([_px/2+_pbh/2,-_py/2+prong_w,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
         translate([_px/2+_pbh/2,-_py/2,-main_z/2+pcb_elev]) cylinder(h=_pz+o , d=_pbh);
@@ -425,10 +431,12 @@ difference(){
 
     if(variant=="max"){
       translate([-main_x/2-o,-pcb_y/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,_pbw,pcb_z]);
+      // middle prong - pin1/pin28 end
+      //translate([-main_x/2-o,pcb_y/2-prong_w*3,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
       translate([-main_x/2-o,pcb_y/2-prong_w,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
-      translate([-main_x/2-o,pcb_y/2-prong_w*3,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
       translate([pcb_x/2-o,pcb_y/2-prong_w,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
-      translate([pcb_x/2-o,-prong_w/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
+      // middle prong - pin14/pin15 end
+      //translate([pcb_x/2-o,-prong_w/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
       translate([pcb_x/2-o,-pcb_y/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
     }
 
@@ -477,8 +485,8 @@ if(variant=="max"){
   translate([-pcb_x/2-prong_cyl/2,-_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
   translate([-pcb_x/2-prong_cyl/2,-_py/2+_pbw,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
 
-  translate([-pcb_x/2-prong_cyl/2,_py/2-prong_w*3,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
-  translate([-pcb_x/2-prong_cyl/2,_py/2-prong_w*2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  //translate([-pcb_x/2-prong_cyl/2,_py/2-prong_w*3,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  //translate([-pcb_x/2-prong_cyl/2,_py/2-prong_w*2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
 
   translate([-pcb_x/2-prong_cyl/2,_py/2-prong_w,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
   translate([-pcb_x/2-prong_cyl/2,_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
@@ -486,8 +494,8 @@ if(variant=="max"){
   translate([pcb_x/2+prong_cyl/2,_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
   translate([pcb_x/2+prong_cyl/2,_py/2-prong_w,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
 
-  translate([pcb_x/2+prong_cyl/2,prong_w/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
-  translate([pcb_x/2+prong_cyl/2,-prong_w/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  //translate([pcb_x/2+prong_cyl/2,prong_w/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
+  //translate([pcb_x/2+prong_cyl/2,-prong_w/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
 
   translate([pcb_x/2+prong_cyl/2,-_py/2+prong_w,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
   translate([pcb_x/2+prong_cyl/2,-_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);

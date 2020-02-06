@@ -1,4 +1,4 @@
-(module pcb2molex8878_max (layer F.Cu) (tedit 5E3B1EE6)
+(module pcb2molex8878_max (layer F.Cu) (tedit 5E3BED06)
   (descr "Castellated edge contacts to fit Molex 8878 Socket")
   (solder_mask_margin -0.28)
   (fp_text reference carrier? (at -0.9906 -0.9906 -90) (layer Dwgs.User) hide
