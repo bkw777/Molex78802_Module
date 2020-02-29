@@ -1,4 +1,4 @@
-update=Wed 05 Feb 2020 08:18:42 PM EST
+update=Sat 29 Feb 2020 01:08:22 PM EST
 version=1
 last_client=pcbnew
 [general]
@@ -50,7 +50,7 @@ CopperTextSizeH=1.2192
 CopperTextThickness=0.254
 CopperTextItalic=0
 CopperTextUpright=1
-EdgeCutLineWidth=0.0254
+EdgeCutLineWidth=0.02
 CourtyardLineWidth=0.05
 OthersLineWidth=0.02
 OthersTextSizeV=1

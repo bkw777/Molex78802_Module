@@ -36,8 +36,8 @@ _fc = 0.1;  // fitment clearance
 
 // main box-shaped cavity inside socket
 // not counting polarity features or contacts
-main_x = 39.8;    // 050395288_sd.pdf 50-39-5288 DIM. F: 39.8 / 015299282_sd.pdf: 40.01
-main_y = 16.8;    // 050395288_sd.pdf: 16.64 / 015299282_sd.pdf: 16.89
+main_x = 39.6;    // 050395288_sd.pdf 50-39-5288 DIM. F: 39.8 / 015299282_sd.pdf: 40.01
+main_y = 16.6;    // 050395288_sd.pdf: 16.64 / 015299282_sd.pdf: 16.89
 main_z = 7.48;    // neither pdf shows the carrier height nor the socket depth
 
 // pcb thickness - nominal 1.6
@@ -53,9 +53,9 @@ pcb_y = (variant=="legacy") ? 15.3 : (variant=="max") ? main_y+0.002 : 16.1;
 pcb_z = _pz+_fc;
 
 // 1.6mm pcb
-pcb_elev = 2.4;   // bottom of pcb above socket floor. DON'T GO BELOW 1.9 !!!
+pcb_elev = 2.2;   // bottom of pcb above socket floor. Min 1.9 - Max 2.4
 // 0.8mm pcb
-//pcb_elev = 2.8;   // bottom of pcb above socket floor. DON'T GO BELOW 1.9 !!!
+//pcb_elev = 2.6;   // bottom of pcb above socket floor.
 
 // Derived/calculated dimensions for the actual PCB
 _px = pcb_x - _fc;
@@ -71,15 +71,15 @@ pocket_floor = 0.8; // floor thickness. fab limit 0.7 min
 pocket_z = pcb_elev - pocket_floor;
 
 // wedge-shaped corner posts at pin1 & pin28
-cpwedge_xwide = 1.7;      // thick end of wedge
-cpwedge_xnarrow = 1.1;    // thin end of wedge
-cpwedge_y = 21.2;         // total Y outside end to end both posts
+cpwedge_xwide = 1.6;    // thick end of wedge
+cpwedge_xnarrow = 1;    // thin end of wedge
+cpwedge_y = 21;         // total Y outside end to end both posts
 
 // box-shaped corner posts at pin14 & pin15
-cpbox_x = 2.1;    // X len of 1 post
-cpbox_y = 1.8;    // Y width of 1 post
+cpbox_x = 2;    // X len of 1 post
+cpbox_y = 1.75;    // Y width of 1 post
 cpbox_xe = 0.3;   // X extends past main_x
-cpbox_yo = 19.8;  // total Y outside end to end both posts
+cpbox_yo = 19.6;  // total Y outside end to end both posts
 
 // socket polarity blades
 blade_z = 5.2;            // height from top of main_z to bottom of blade
