@@ -1,4 +1,4 @@
-(module pcb2molex8878_max (layer F.Cu) (tedit 5E5AA68E)
+(module pcb2molex8878_max (layer F.Cu) (tedit 5E5AAC31)
   (descr "Castellated edge contacts to fit Molex 8878 Socket")
   (solder_mask_margin -0.28)
   (fp_text reference carrier? (at -0.9906 -0.9906 -90) (layer Dwgs.User) hide
@@ -31,7 +31,7 @@
   (pad "" np_thru_hole circle (at -8.35 19.5) (size 0.8 0.8) (drill 0.8) (layers *.Cu))
   (pad "" np_thru_hole circle (at 8.35 19.5) (size 0.8 0.8) (drill 0.8) (layers *.Cu))
   (model ${KIPRJMOD}/000_LOCAL.pretty/3d/pcb2molex8878_max.step
-    (offset (xyz 0 0 -0.4))
+    (offset (xyz 0 0 -0.2))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 90))
   )

@@ -1,4 +1,4 @@
-(module pcb2molex8878_chamfer (layer F.Cu) (tedit 5E5AA639)
+(module pcb2molex8878_chamfer (layer F.Cu) (tedit 5E5AAC43)
   (descr "Castellated edge contacts to fit Molex 8878 Socket")
   (solder_mask_margin -0.28)
   (fp_text reference carrier? (at -1.5 0 -90) (layer Dwgs.User) hide
@@ -46,7 +46,7 @@
   (fp_line (start -5.94 -18.3) (end -5.94 -16.94) (layer Dwgs.User) (width 0.01))
   (fp_line (start -5.94 -16.94) (end -5.2 -16.94) (layer Dwgs.User) (width 0.01))
   (model ${KIPRJMOD}/000_LOCAL.pretty/3d/pcb2molex8878_chamfer.step
-    (offset (xyz 0 0 -0.4))
+    (offset (xyz 0 0 -0.2))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 90))
   )

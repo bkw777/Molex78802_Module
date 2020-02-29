@@ -1,4 +1,4 @@
-(module pcb2molex8878_bump (layer F.Cu) (tedit 5E5AA623)
+(module pcb2molex8878_bump (layer F.Cu) (tedit 5E5AAC54)
   (descr "Castellated edge contacts to fit Molex 8878 Socket")
   (solder_mask_margin -0.28)
   (fp_text reference carrier? (at -0.9906 -0.9906 -90) (layer Dwgs.User) hide
@@ -57,7 +57,7 @@
   (fp_line (start -4.1 -18) (end -4.1 -17.31) (layer Dwgs.User) (width 0.01))
   (fp_line (start -4.1 -17.31) (end -3.22 -17.31) (layer Dwgs.User) (width 0.01))
   (model ${KIPRJMOD}/000_LOCAL.pretty/3d/pcb2molex8878_bump.step
-    (offset (xyz 0 0 -0.4))
+    (offset (xyz 0 0 -0.2))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 90))
   )
