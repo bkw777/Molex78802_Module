@@ -1,24 +1,9 @@
-# pcb2molex8878
+# Molex78805 PCB Module
 Matched PCB template and 3d-printable carrier to fit in the Molex DIP-28 socket found in some vintage computers.
 
-There are a few different versions to suit different needs.
+![](Molex_78805_PCB_Module.png)
 
-## "chamfer" version
-This is the default version.  
-![](pcb2molex8878_chamfer.png)
-
-## "max" version
-This version provides the maximum usable pcb real-estate, on both top & bottom surfaces.  
-![](pcb2molex8878_max.png)
-
-## "bump" version
-![](pcb2molex8878_bump.png)
-
-## "pin" version
-![](pcb2molex8878_pin.png)
-
-## more info
-http://tandy.wiki/pcb2molex8878  
+http://tandy.wiki/Molex78805_PCB_Module  
 http://tandy.wiki/Teeprom  
 http://tandy.wiki/REX  
 

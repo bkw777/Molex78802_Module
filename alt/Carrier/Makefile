@@ -1,10 +1,8 @@
 # Generate STL and STEP mesh output files from OpenSCAD source
 # Brian K. White - b.kenyon.w@gmail.com
 
-model = Molex78805_PCB_Carrier
-#variants = chamfer bump max pin legacy
-#variants = chamfer bump max pin # legacy
-variants = chamfer # bump max pin # legacy
+model = pcb2molex8878
+variants = chamfer bump max pin legacy
 
 openscad = openscad-nightly
 freecadcmd = freecadcmd-daily
