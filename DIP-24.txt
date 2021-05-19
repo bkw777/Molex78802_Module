@@ -1,5 +1,5 @@
 Molex 78805 has 28 pins, but there are other versions with more or less pins.
-There is a 24-pin version of the carrier and cb included. They were made manually and the Makefiles don't know about them.
+There is a 24-pin version of the carrier and pcb included. They were made manually and the Makefiles don't know about them.
 
 Molex_PCB_DIP24_Carrier.stl is the 24-pin carrier.
 Molex_PCB_DIP24.kicad_pcb is the 24-pn pcb.
@@ -10,5 +10,5 @@ The carrier can be generated from the existing .scad file by overriding 2 variab
 main_x=34.52 is the main_x of the 28-pin version (39.6mm) minus 2x2.54mm
 c_number=24 is the number of contacts
 
-The pcb and the .step file for the 3d view were made manually.
-
+The 24 pin version of the pcb was just made manually.
+The .step file for kicad was manually made from the .stl using freecad.
