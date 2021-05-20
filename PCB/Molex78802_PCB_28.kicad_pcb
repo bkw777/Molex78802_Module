@@ -1,4 +1,4 @@
-(kicad_pcb (version 20171130) (host pcbnew 5.1.9-73d0e3b20d~88~ubuntu20.10.1)
+(kicad_pcb (version 20171130) (host pcbnew 5.1.10-88a1d61d58~88~ubuntu20.10.1)
 
   (general
     (thickness 1.6)
@@ -11,9 +11,9 @@
 
   (page A4)
   (title_block
-    (title "PCB to Fit Inside Molex 15-29-9282 Socket")
-    (date 2021-03-16)
-    (rev 002)
+    (title "Molex78802 PCB 28")
+    (date 2021-05-20)
+    (rev 003)
     (company b.kenyon.w@gmail.com)
   )
 
@@ -113,7 +113,7 @@
     (diff_pair_gap 0.254)
   )
 
-  (module 000_LOCAL:Molex78805_PCB (layer Top) (tedit 60508461) (tstamp 6051543D)
+  (module 000_LOCAL:Molex78802_PCB_28 (layer Top) (tedit 60A61F36) (tstamp 6051543D)
     (at 147.2184 99.187)
     (descr "Castellated edge contacts to fit Molex 78805 Socket")
     (solder_mask_margin 0.0508)
@@ -121,7 +121,7 @@
     (fp_text reference J? (at -1.905 0 -90) (layer Dwgs.User) hide
       (effects (font (size 1.2065 1.2065) (thickness 0.127)) (justify bottom))
     )
-    (fp_text value Molex78805_PCB (at 1.27 0 -90) (layer F.Fab) hide
+    (fp_text value Molex78802_PCB_28 (at 1.27 0 -90) (layer F.Fab) hide
       (effects (font (size 1.2065 1.2065) (thickness 0.1016)) (justify bottom))
     )
     (fp_text user "0.7 border on bottom - 36.6 x 14.4 x 1.4 usable bottom" (at -5.5 -17) (layer Dwgs.User)
@@ -302,8 +302,8 @@
     (pad 2 thru_hole circle (at -8.5552 -13.97) (size 1.6002 1.6002) (drill 1.59766) (layers *.Cu *.Mask)
       (zone_connect 0))
     (pad 15 thru_hole circle (at 8.5552 16.51 180) (size 1.6002 1.6002) (drill 1.59766) (layers *.Cu *.Mask))
-    (model ${KIPRJMOD}/000_LOCAL.pretty/3d/Molex78805_PCB_Carrier_chamfer.step
-      (offset (xyz 0 0 -0.25))
+    (model ${KIPRJMOD}/000_LOCAL.pretty/3d/Molex78802_PCB_28.step
+      (offset (xyz 0 0 -0.18))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 90))
     )
