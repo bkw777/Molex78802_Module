@@ -67,12 +67,12 @@ pcb_y = (variant=="DIP") ? 15.3 : (variant=="maxpcb") ? main_y+0.002 : 16.1;
 pcb_z = _fc+pcb_thickness+_fc;
 
 // pcb elevation - bottom of pcb above socket floor
-pcb_elev = (variant=="DIP") ? 3 : 2.2;  // min 1.9 - max 2.4
+pcb_elev = (variant=="DIP") ? 2.9 : 2.2;  // min 1.9 - max 2.4
 
 // Derived/calculated dimensions for the actual PCB
 // for dip version, really derive from datasheet
-_px = (variant=="DIP") ? ((pins/2)*pitch)+1 : pcb_x-_fc;
-_py = (variant=="DIP") ? cerdip_body_y : pcb_y-_fc;
+_px = (variant=="DIP") ? ((pins/2)*pitch)+1 : pcb_x-_fc*2;
+_py = (variant=="DIP") ? cerdip_body_y : pcb_y-_fc*2;
 _pe = pcb_elev + _fc/2;
 
 // cavity in bottom tray for backside components and through-hole legs
@@ -123,6 +123,13 @@ c_x_full = c_positions * pitch;
 c_diff = pitch - c_width;
 c_x_min = c_x_full - c_diff;
 
+// Stuff for "DIP" variant
+pin_pocket_width = pitch-min_wall;
+pin_pocket_len = 3.5; // inside face of pin_bend_wall towards center
+pin_bend_wall_thickness = 1;
+pin_bend_wall_outsides = 14.7; // outside face to opposite outside face
+pin_bend_wall_height = 1.7; // pcb_elev to bottom of wall that pins bend over
+
 /////////////////////////////////////////////////////
 // pcb polarity - polarity of the pcb in the carrier
 // (not polarity of the carrier in the socket)
@@ -143,7 +150,7 @@ legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the
 
 $fn=18; // arc smoothness
 
-hide_pcb = true;  // overridden by Makefile, hide %pcb() so that scad-to-step.py only sees the carrier object
+hide_pcb = false;  // overridden by Makefile, hide %pcb() so that scad-to-step.py only sees the carrier object
 
 // Display some calculated values in the console,
 // so that it's easy to copy them to KiCAD,
@@ -404,25 +411,25 @@ difference(){
       rotate([135,0,0])
        cube([c_x_min,2,1]);
     // cut out the pin pockets
-    pin_pocket_width = pitch-min_wall;
-    pin_pocket_len = 5;
-    pin_bend_wall_width = 1.5;
-    pin_bend_wall_inset = 1;
     mirror_copy([0,1,0])
       for (i=[0:c_positions-1]){
         // main pocket
-        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),main_y/2-pin_bend_wall_inset-pin_bend_wall_width,-main_z/2+pcb_elev-min_wall])
+        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),pin_bend_wall_outsides/2-pin_bend_wall_thickness,-main_z/2+pcb_elev-min_wall])
          rotate([180,0,0])
           cube([pin_pocket_width,pin_pocket_len,3]);
         // bend wall bottom clearance
-        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),main_y/2+o,-main_z/2+1])
+        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),main_y/2+o,-main_z/2+pcb_elev-pin_bend_wall_height])
          rotate([180,0,0])
-          cube([pin_pocket_width,pin_pocket_len,3]);
+          cube([pin_pocket_width,pin_pocket_len,pcb_elev-pin_bend_wall_height+o]);
         // bend wall outside clearance
-        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),main_y/2-pin_bend_wall_inset,-main_z/2-o])
+        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),pin_bend_wall_outsides/2,-main_z/2-o])
          rotate([0,0,0])
-          cube([pin_pocket_width,pin_bend_wall_inset+1,o+main_z+o]);
+          cube([pin_pocket_width,main_y/2-pin_bend_wall_outsides/2+o,o+main_z+o]);
       }
+      // hollow out the backbone
+      backbone_cavity_y = pin_bend_wall_outsides-pin_bend_wall_thickness*2-pin_pocket_len*2-min_wall*2;
+      translate([-c_x_full/2,-backbone_cavity_y/2,-main_z/2-o])
+       cube([c_x_full,backbone_cavity_y,pcb_elev-min_wall+o]);
     }
   }
 }
