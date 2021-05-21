@@ -104,15 +104,15 @@ cpbox_xe = 0.3;   // X extends past main_x
 cpbox_yo = 19.6;  // total Y outside end to end both posts
 
 // socket polarity blades
-blade_z = 5.2;            // height from top of main_z to bottom of blade
+blade_z = 5.0;            // height from top of main_z to bottom of blade
 blade_xwide = 2.5;        // wide part extend past main_x
-blade_xnarrow = 1.4;      // narrow part extend past main_x
-blade_thickness = 1.4;
+blade_xnarrow = 1.3;      // narrow part extend past main_x
+blade_thickness = 1.3;
 
 // finger pull wings
 wing_y = 8.95;
-wing_x = 3.2;             // extend past main_x
-wing_thickness = 1.2;
+wing_x = 3.5;             // extend past main_x
+wing_thickness = blade_thickness;
 
 // pcb retainer wedges
 ret_x = 1;        // overhang
@@ -154,12 +154,10 @@ prong_cyl = (main_x-pcb_x)/2;  // aka _pbh - _fc/2
 _pbw = prong_w * 2;     // one prong double width for polarity
 _pbh = (variant=="maxpcb") ? main_x/2-pcb_x/2+_fc/2 : 0;  // bump height = end wall thickness
 
-o = 0.001;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
+o = 0.01;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
 legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the legacy variant - acommodate mill radius in pcb edge cuts
 
 $fn=18; // arc smoothness
-
-hide_pcb = false;  // overridden by Makefile, hide %pcb() so that scad-to-step.py only sees the carrier object
 
 // Display some calculated values in the console,
 // so that it's easy to copy them to KiCAD,
@@ -294,8 +292,8 @@ difference(){
     cube([c_x_min,main_y+o,main_z]);
 
     // notch in wing 1 / pin 1/28 end
-    translate([-main_x/2-wing_x-o,-blade_thickness/2,main_z/2-blade_thickness+o])
-      cube([wing_x-blade_xwide+o,blade_thickness,wing_thickness+o*2]);
+    translate([-main_x/2-wing_x-o,-blade_thickness/2,main_z/2-wing_thickness-o])
+      #cube([wing_x-blade_xwide+o,blade_thickness,o+wing_thickness+o]);
 
     // holes in end-walls
     if(variant=="maxpcb"){
