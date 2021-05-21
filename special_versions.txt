@@ -1,0 +1,15 @@
+Aside from the "DIP" and "PCB" versions, there is also a hidden "maxpcb" version.
+
+To generate a maxpcb version, run:  
+    cd Carrier && make variants=maxpcb
+
+The maxpcb version is difficult to use, incompatible with normal REX/Teeprom/Meeprom boards, and probably never needed, so it's hidden for simplicity. But it exists to provide an option if ever really needed, that gives the absolute most possible usable pcb real-estate.
+
+The normal PCB version has:
+* A ledge running aoround the perimeter for the pcb to rest on, which consumes a 0.7mm on all 4 sides on the bottom.
+* 2 snap wedges on top that hold the pcb down, which consumes 2 1x10mm chunks on the top.
+* A polarity chamfer in one corner which consumes 1.7mm of that corner on top and bottom
+
+The maxpcb replaces all those mechanisms for holding the pcb in place with holes in the end walls, and you design the pcb board outline to have prongs that stick into those holes. This holds the pcb in place in all directions, and polarity is asserted by the fact that one hole is larger. This allows to dispense with the perimiter ledge, the snap wedges, and the chamfer. This allows not only traces but even components to exist right to the edge of the pcb on all 4 sides and on both top & bottom.
+
+There is no kicad template for a maxpcb board at this time. 

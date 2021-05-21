@@ -63,7 +63,16 @@ _mr = 0.836; // pcb edge cut mill radius (0.034")
 // pcb cavity (pcb will be smaller)
 //pcb_x = (variant=="DIP") ? 37.5 : main_x-1.5;     // leave walls >= 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
 pcb_x = (variant=="DIP") ? ((pins/2)*pitch)+cerdip_body_x_extra : main_x-min_wall*2;     // leave walls >= 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
-pcb_y = (variant=="DIP") ? 15.3 : (variant=="maxpcb") ? main_y+0.002 : 16.1;
+
+// DIP version could actually have no side walls, same as maxpcb.
+// The dip legs hold the chip in place.
+// The "eby" branded carrier (eby 9775-548-28) has no side walls.
+//pcb_y = (variant=="DIP") ? cerdip_body_y+_fc*2 : (variant=="maxpcb") ? main_y+0.002 : 16.1;
+//pcb_y = (variant=="DIP") ? cerdip_body_y+_fc*2 : (variant=="maxpcb") ? o+main_y+o : main_y-_fc*2;
+//pcb_y = (variant=="DIP") ? cerdip_body_y+_fc*2 : (variant=="maxpcb") ? 3+main_y+3 : main_y+0.001;
+pcb_y = (variant=="DIP") ? cerdip_body_y+_fc*2 : (variant=="maxpcb") ? 3+main_y+3 : _fc+main_y+_fc;
+//pcb_y = (variant=="DIP" || variant=="maxpcb") ? main_y+0.002 : 16.1;
+
 pcb_z = _fc+pcb_thickness+_fc;
 
 // pcb elevation - bottom of pcb above socket floor
@@ -145,7 +154,7 @@ prong_cyl = (main_x-pcb_x)/2;  // aka _pbh - _fc/2
 _pbw = prong_w * 2;     // one prong double width for polarity
 _pbh = (variant=="maxpcb") ? main_x/2-pcb_x/2+_fc/2 : 0;  // bump height = end wall thickness
 
-o = 0.1;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
+o = 0.001;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
 legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the legacy variant - acommodate mill radius in pcb edge cuts
 
 $fn=18; // arc smoothness
@@ -158,17 +167,17 @@ if(variant!="DIP"){
 echo("###################################################################");
 echo("#");
 echo("### Use the following dimensions in KiCAD");
-echo("### Carrier Variant",variant);
+echo("### Carrier Variant,Pins",variant,pins);
 echo("#");
-echo("# PCB: Length,Width",_px,round(_py*10)/10);
+echo("# PCB: Length,Width",pcb_x-_fc*2,main_y);
 if(variant=="PCB"){
   echo("# Polarity Chamfer:",pcb_polarity_chamfer);
-  echo("# Backside Pocket: Length,Width,Depth", (pocket_x>_px)?_px-_fc:pocket_x-_fc , (pocket_y>_py)?round((_py-_fc)*10)/10:pocket_y-_fc , (pocket_z>pcb_elev)?pcb_elev:pocket_z );
+  echo("# Backside Pocket: Length,Width,Depth", (pocket_x>pcb_x-_fc*2)?pcb_x-_fc*2:pocket_x-_fc*2 , (pocket_y>pcb_y-_fc*2)?round((pcb_y-_fc*2)*10)/10:pocket_y-_fc*2 , (pocket_z>pcb_elev)?pcb_elev:pocket_z );
 }
 if(variant=="maxpcb"){
   echo("# Polarity Bump: Width,Height",_pbw,_pbh);
   echo("# Prongs: Width,Height",prong_w,_pbh);
-  echo("# Backside Pocket: Length,Width,Depth", _px, round(_py*10)/10, (pocket_z>pcb_elev)?pcb_elev:pocket_z );
+  echo("# Backside Pocket: Length,Width,Depth", pcb_x-_fc*2, main_y-_fc*2, (pocket_z>pcb_elev)?pcb_elev:pocket_z );
 }
 echo("#");
 echo("###################################################################");
@@ -196,71 +205,6 @@ module blade(){
           [blade_xnarrow,blade_z-wing_thickness*2],
           [blade_xnarrow,0]
         ]);
-}
-
-module pcb () {
-  difference(){
-    group(){ // ADD
-      if (variant!="DIP")
-        translate([-_px/2,-_py/2,-main_z/2+_pe])
-          linear_extrude(pcb_thickness)
-            polygon([
-              // begin pin1/pin28 end - pin1 corner
-              [0,0],
-              [-_pbh,0],
-              [-_pbh,_pbw],
-              [0,_pbw],
-              [0,_py-prong_w],
-              [-_pbh,_py-prong_w],
-              [-_pbh,_py],
-              [0,_py],
-              // begin pin14/pin15 end - pin15 corner
-              [_px,_py],
-              [_px+_pbh,_py],
-              [_px+_pbh,_py-prong_w],
-              [_px,_py-prong_w],
-              [_px,prong_w],
-              [_px+_pbh,prong_w],
-              [_px+_pbh,0],
-              [_px,0]
-            ]);
-      if(variant=="DIP")
-        translate([-_px/2,-_py/2,-main_z/2+_pe])
-          cube([_px,_py,pcb_thickness]);
-    }
-
-    group(){ //REMOVE
-      // castellated edge contacts
-      mirror_copy([0,1,0])
-        for (i=[0:c_positions-1])
-          translate([-(c_x_full/2)+(pitch/2)+(i*pitch),c_drill_y,-main_z/2-o])
-            cylinder(h=main_z+2*o,d=c_drill_diameter);
-      // polarity chamfer
-      if(variant=="PCB")
-        translate([-_px/2,-_py/2,-main_z/2+pcb_elev-o])
-          linear_extrude(pcb_thickness+2*o)
-            polygon([
-              [pcb_polarity_chamfer+o,-o],
-              [-o,-o],
-              [-o,pcb_polarity_chamfer+o],
-            ]);
-      
-      // half-holes drilled in the inner sides of the prongs
-      if (variant=="maxpcb"){
-        translate([-_px/2-_pbh/2,-_py/2,-main_z/2+pcb_elev]) cylinder(h=pcb_thickness+o , d=_pbh);
-        translate([-_px/2-_pbh/2,-_py/2+_pbw,-main_z/2+pcb_elev]) cylinder(h=pcb_thickness+o , d=_pbh);
-  
-        translate([-_px/2-_pbh/2,_py/2-prong_w,-main_z/2+pcb_elev]) cylinder(h=pcb_thickness+o , d=_pbh);
-        translate([-_px/2-_pbh/2,_py/2,-main_z/2+pcb_elev]) cylinder(h=pcb_thickness+o , d=_pbh);
-
-        translate([_px/2+_pbh/2,_py/2,-main_z/2+pcb_elev]) cylinder(h=pcb_thickness+o , d=_pbh);
-        translate([_px/2+_pbh/2,_py/2-prong_w,-main_z/2+pcb_elev]) cylinder(h=pcb_thickness+o , d=_pbh);
-
-        translate([_px/2+_pbh/2,-_py/2+prong_w,-main_z/2+pcb_elev]) cylinder(h=pcb_thickness+o , d=_pbh);
-        translate([_px/2+_pbh/2,-_py/2,-main_z/2+pcb_elev]) cylinder(h=pcb_thickness+o , d=_pbh);
-      }
-    }
-  }
 }
 
 module carrier () {
@@ -323,49 +267,7 @@ difference(){
                 [lswcs,0],
                 [0,lswcs]
               ]);
-    } else if (variant=="maxpcb") {
-
     } else {
-      // 3d-print services can't print walls thinner than 0.7mm,
-      // so here we shave them off the corner posts, mostly.
-      // We leave a small triangular wall in the corner which
-      // gets past the validity checkers and creates a small
-      // bit of material in the corner like a finger web,
-      // which does improve how well the pcb is held in place,
-      // especially at the pin28 corner.
-
-      // corners 1 & 28
-      _iwx1 = main_x/2-c_x_min/2-cpwedge_xwide;
-      mirror_copy([0,1,0])
-        translate([-main_x/2+cpwedge_xwide,main_y/2+o,-main_z/2+pcb_elev])
-          rotate([90,0,0])
-            linear_extrude(main_y/2-pcb_y/2+o*2)
-              polygon([
-                [_iwx1,0],
-                [_iwx1+o,0],
-                [_iwx1+o,main_z-pcb_elev+o],
-                [0,main_z-pcb_elev+o],
-                [0,pcb_z]
-              ]);
-
-      // corners 14 & 15
-      _iwx2 = (main_x/2+cpbox_xe-cpbox_x)-c_x_min/2;
-      mirror_copy([0,1,0])
-        translate([c_x_min/2,main_y/2+o,-main_z/2+pcb_elev]) 
-          rotate([90,0,0])
-            linear_extrude(main_y/2-pcb_y/2+o*2)
-              polygon([
-                [-o,0],
-                [-o,main_z-pcb_elev+o],
-                [_iwx2,main_z-pcb_elev+o],
-                [_iwx2,pcb_z],
-                [0,0,]
-              ]);
-
-
-    }
-
-    if(variant!="DIP"){
     // pocket for backside components
     translate([0,0,pcb_elev-pocket_z])
       cube([pocket_x,pocket_y,main_z],center=true);
@@ -446,16 +348,29 @@ if (variant!="maxpcb" && variant!="DIP") mirror_copy([1,0,0]) // pin 14/15 end
         ]);
 
 // pcb polarity
-if(variant=="PCB")
-  translate([-pcb_x/2,-pcb_y/2,-main_z/2])
+if(variant=="PCB"){
+  // pin-1 corner chamfer
+  difference(){
+  // add wedge
+  translate([-pcb_x/2-o,-pcb_y/2-o,-main_z/2])
     linear_extrude(pcb_elev+pcb_z)
       polygon([
         [0,0],
-        [0,pcb_polarity_chamfer+_fc/2],
-        [pcb_polarity_chamfer+_fc/2,0],
-        [pcb_polarity_chamfer+_fc/2,-(main_y/2-pcb_y/2)],
-        [0,-(main_y/2-pcb_y/2)],
+        [0,pcb_polarity_chamfer+o],
+        [pcb_polarity_chamfer+o,0],
       ]);
+  // remove part of the wedge that ends up outside of main_y
+  // fakakta math to hug the odd angle made by the wedge-shaped corner wing
+  translate([-main_x/2+cpwedge_xwide,-main_y/2,-main_z/2-o])
+   linear_extrude(o+main_z+o)
+    polygon([
+    [0,0],
+    [pcb_polarity_chamfer+o,0],
+    [-cpwedge_xwide+cpwedge_xnarrow,-cpwedge_y/2+main_y/2]
+    ]);
+  }
+}
+
 if(variant=="maxpcb"){
   // Intentionally using _py (pcb edge) instead of pcb_y (carrier edge) here to make the fit tight
   translate([-pcb_x/2-prong_cyl/2,-_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
@@ -474,18 +389,6 @@ if(variant=="maxpcb"){
 }  // carrier
 
 ////////////////////////////////////////////////////////////////////////////////
-
-// Makefile overrides hide_pcb, and pcb_move_* to generate pngs for README.md
-pcb_move_x = 0;
-pcb_move_y = 0;
-pcb_move_z = 0;
-pcb_color = "none";
-if(!hide_pcb){
-  translate([pcb_move_x,pcb_move_y,pcb_move_z]){
-    if(pcb_color!="none") color(pcb_color) pcb();
-    else %pcb();
-  }
-}
 
 // Makefile overrides carrier_color to generate pngs for README.md
 carrier_color = "none";

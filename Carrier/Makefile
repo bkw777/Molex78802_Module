@@ -2,8 +2,9 @@
 # Brian K. White - b.kenyon.w@gmail.com
 
 model = Molex78802
-variants = PCB DIP # maxpcb
-#pincounts = 24 28 32
+# PCB DIP maxpcb
+variants = PCB DIP
+# 24 28 32
 pins = 28
 
 #openscad = openscad-nightly
@@ -23,7 +24,7 @@ $(model)_%_$(pins).stl: $(model).scad
 
 # Generate .png for README.md
 $(model)_%_$(pins).png: $(model).scad
-	$(openscad) -D'variant="$(*)"' -D'pins=$(pins)' -D'hide_pcb=false' -D'pcb_move_z=20' -D'pcb_color="green"' -D'carrier_color="lightgrey"' --colorscheme DeepOcean --imgsize 1024,768 --viewall -o $(@) $(model).scad
+	$(openscad) -D'variant="$(*)"' -D'pins=$(pins)' -D'carrier_color="lightgrey"' --colorscheme DeepOcean --imgsize 1024,768 --viewall -o $(@) $(model).scad
 #	$(openscad) -D'variant="$(*)"' -D'pcb_move_y=20' --colorscheme DeepOcean --imgsize 1024,768 --camera=0,0,0,0,0,90,0 --viewall --autocenter -o $(model)_$(*)_02.png $(model).scad
 #	$(openscad) -D'variant="$(*)"' --colorscheme DeepOcean --imgsize 1024,768 -o $(model)_$(*)_03.png $(model).scad
 #	$(openscad) -D'variant="$(*)"' --camera=0,0,0,90,0,0,0 --viewall --colorscheme DeepOcean --imgsize 1024,768 -o $(model)_$(*)_04.png $(model).scad
@@ -41,7 +42,6 @@ $(model)_%_$(pins).png: $(model).scad
 #$(model)_%.step: scad-to-step.py $(model).scad
 #	cp -f $(model).scad $(model)_$(*)_$(pins).scad
 #	echo "variant=\"$(*)\";" >> $(model)_$(*)_$(pins).scad
-#	echo "hide_pcb=true;" >> $(model)_$(*)_$(pins).scad
 #	PYTHONDONTWRITEBYTECODE=1 MODEL=$(model)_$(*)_$(pins) $(freecadcmd) scad-to-step.py
 #	rm -f $(model)_$(*)_$(pins).scad
 
@@ -58,7 +58,7 @@ $(model)_%_$(pins).step: stl-to-step.py $(model)_%_$(pins).stl
 help list:
 	@echo "Targets: all $(variants) help list clean"
 	@echo
-	@echo "  all = generate 28-pin size .stl, .step, and .png for all variants: ($(variants))"
+	@echo "  all = generate $(pins)-pin .stl, .step, and .png for all variants: ($(variants))"
 	@echo "  $(variants) = generate .stl, .step, and .png for the specified variation"
 	@echo "  help or list: display this text"
 	@echo "  clean: delete *.stl *.step"
