@@ -78,12 +78,6 @@ pcb_z = _fc+pcb_thickness+_fc;
 // pcb elevation - bottom of pcb above socket floor
 pcb_elev = (variant=="DIP") ? 2.9 : 2.2;  // min 1.9 - max 2.4
 
-// Derived/calculated dimensions for the actual PCB
-// for dip version, really derive from datasheet
-_px = (variant=="DIP") ? ((pins/2)*pitch)+1 : pcb_x-_fc*2;
-_py = (variant=="DIP") ? cerdip_body_y : pcb_y-_fc*2;
-_pe = pcb_elev + _fc/2;
-
 // cavity in bottom tray for backside components and through-hole legs
 perimeter_ledge = (variant=="maxpcb")?0:0.8;
 pocket_x = pcb_x-perimeter_ledge*2;
@@ -133,7 +127,7 @@ c_diff = pitch - c_width;
 c_x_min = c_x_full - c_diff;
 
 // Stuff for "DIP" variant
-pin_pocket_width = pitch-min_wall;
+pin_pocket_width = pitch-min_wall-0.1;
 pin_pocket_len = 3.5; // inside face of pin_bend_wall towards center
 pin_bend_wall_thickness = 1;
 pin_bend_wall_outsides = 14.7; // outside face to opposite outside face
@@ -154,7 +148,7 @@ prong_cyl = (main_x-pcb_x)/2;  // aka _pbh - _fc/2
 _pbw = prong_w * 2;     // one prong double width for polarity
 _pbh = (variant=="maxpcb") ? main_x/2-pcb_x/2+_fc/2 : 0;  // bump height = end wall thickness
 
-o = 0.01;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
+o = 0.2;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
 legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the legacy variant - acommodate mill radius in pcb edge cuts
 
 $fn=18; // arc smoothness
@@ -293,7 +287,7 @@ difference(){
 
     // notch in wing 1 / pin 1/28 end
     translate([-main_x/2-wing_x-o,-blade_thickness/2,main_z/2-wing_thickness-o])
-      #cube([wing_x-blade_xwide+o,blade_thickness,o+wing_thickness+o]);
+      cube([wing_x-blade_xwide+o,blade_thickness,o+wing_thickness+o]);
 
     // holes in end-walls
     if(variant=="maxpcb"){
@@ -307,16 +301,16 @@ difference(){
     if(variant=="DIP"){
     // main chamfer on the pin dividers
     mirror_copy([0,1,0])
-     translate([-c_x_min/2,-main_y/2+1,-main_z/2-o])
+     translate([-c_x_min/2,-main_y/2+1,-main_z/2-0.01])
       rotate([135,0,0])
        cube([c_x_min,2,1]);
     // cut out the pin pockets
     mirror_copy([0,1,0])
       for (i=[0:c_positions-1]){
         // main pocket
-        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),pin_bend_wall_outsides/2-pin_bend_wall_thickness,-main_z/2+pcb_elev-min_wall])
+        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),pin_bend_wall_outsides/2-pin_bend_wall_thickness,-main_z/2+pcb_elev-min_wall-0.1])
          rotate([180,0,0])
-          cube([pin_pocket_width,pin_pocket_len,3]);
+          cube([pin_pocket_width,pin_pocket_len,o+pcb_elev+o]);
         // bend wall bottom clearance
         translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),main_y/2+o,-main_z/2+pcb_elev-pin_bend_wall_height])
          rotate([180,0,0])
@@ -327,9 +321,10 @@ difference(){
           cube([pin_pocket_width,main_y/2-pin_bend_wall_outsides/2+o,o+main_z+o]);
       }
       // hollow out the backbone
-      backbone_cavity_y = pin_bend_wall_outsides-pin_bend_wall_thickness*2-pin_pocket_len*2-min_wall*2;
-      translate([-c_x_full/2,-backbone_cavity_y/2,-main_z/2-o])
-       cube([c_x_full,backbone_cavity_y,pcb_elev-min_wall+o]);
+      backbone_cavity_y = pin_bend_wall_outsides-pin_bend_wall_thickness*2-pin_pocket_len*2-min_wall*2-0.2;
+      translate([c_x_full/2,-backbone_cavity_y/2,-main_z/2+pcb_elev-min_wall-0.1])
+       rotate([0,180,0])
+       cube([c_x_full,backbone_cavity_y,o+pcb_elev+o]);
     }
   }
 }
@@ -370,7 +365,8 @@ if(variant=="PCB"){
 }
 
 if(variant=="maxpcb"){
-  // Intentionally using _py (pcb edge) instead of pcb_y (carrier edge) here to make the fit tight
+  _py = pcb_y-_fc*2;
+
   translate([-pcb_x/2-prong_cyl/2,-_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
   translate([-pcb_x/2-prong_cyl/2,-_py/2+_pbw,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
 
