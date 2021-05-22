@@ -1,7 +1,9 @@
 # Molex78802 Module
 ![](Molex78802_PCB_28.jpg)
 
-3d-printable carrier similar to Molex 78802, to fit into a Molex 78805 socket, and a PCB template to use in place of a DIP chip.
+***May 19 2021 - Heads up, the PCB outline changed slightly after [v003](https://github.com/bkw777/Molex78802_Module/tree/v003). The PCB is a little wider now. Old boards will be a little loose side-to-side in new carriers, and probably the polarity chamfer won't prevent inserting an old board backwards in a new carrier. New boards won't fit into old carriers, although the difference is small enough that you could just sand the corners down a little and they should work fine. If you have either old carriers or old boards that you want to get the exact matching counterparts for, then go to [Release v003](https://github.com/bkw777/Molex78802_Module/releases/tag/v003).***
+
+This is a 3d-printable carrier similar to Molex 78802, to fit into a Molex 78805 socket, and a PCB template to use in place of a DIP chip.
 
 The OpenSCAD file generates 2 types of carrier, one type that holds a DIP chip like a normal Molex 78802, and a different form that holds a PCB instead of a DIP.
 
