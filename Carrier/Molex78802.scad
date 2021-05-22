@@ -1,18 +1,20 @@
-// OpenSCAD model of a DIP or PCB Molex 78802 carrier to fit a Molex 78805 socket.
-// for Molex78802_PCB.kicad_pcb
+/*
+   OpenSCAD model of a DIP or PCB Molex 78802 carrier to fit a Molex 78805 socket. 
+   Works with Molex78802_PCB.kicad_pcb .
 
-// Produces 9 possible versions
-// There are 3 variants: "DIP", "PCB", and "maxpcb"
-// And each variant may be generated with any even number of pins,
-// and the original Molex 78802/78805 came in 3 pin counts: 24, 28, and 32. 
+   Produces 9 possible versions
+   There are 3 variants: "DIP", "PCB", and "maxpcb"
+   And each variant may be generated with any even number of pins,
+   though Molex 78802/78805 only came in 24, 28, and 32.
 
-// Typical uses:
-// 28-pin "PCB" version fits REX#, REXCPM, REX_Classic_BKW, Teeprom, Meeprom
-// 28-pin "DIP" version fits a DIP-28 chip, and replaces an original Molex78802
+   Uses:
+   28-pin "DIP" version takes a DIP-28 chip, and replaces an original Molex78802
+   28-pin "PCB" version takes PCB like REX#, REXCPM, REX_Classic_BKW, Teeprom, Meeprom
 
-// Brian K. White - b.kenyon.w@gmail.com
-// http://tandy.wiki/Molex78805_PCB_Module
-// https://github.com/aljex/Molex78805_PCB_Module/
+   Brian K. White - b.kenyon.w@gmail.com
+   http://tandy.wiki/Molex78802_Module
+   https://github.com/aljex/Molex78802_Module/
+*/
 
 // -------------------------------------------------------------------------
 // UNITS: mm
@@ -25,42 +27,46 @@ variant = "PCB"; // Makefile overrides this via "-D ..."
 
 // Number of pins:
 // Molex 78802 datasheet shows 24, 28, and 32-pin versions
-pins = 28;
+pins = 28; // Makefile overrides this with "-D ..."
 assert(pins>=2 && pins%2==0);
 
-// PCB dimensions are derived from a mix of constraints.
+// The DIP and PCB versions work a little differently.
 //
-// PCB main outside X,Y dimensions are ultimately derived from the inside of the Molex 78805 socket.
-// Socket interior, minus fitment clearance, minus carrier body, minus fitment clearace = PCB X,Y
-// Then the chamfer on the PCB is derived from the PCB X dim and the edge of the pin1 contact.
-// Then the chamfer in the carrier is derived from the chamfer on the PCB, minus clearance.
+// The PCB version references everything from the inside dimensions of the socket
+// and works inwards from there. The PCB dimensions are ultimately derived from
+// the socket and the limits of the printing technology, to arrive at the largest
+// possible pcb that can fit.
 //
-// Remember that we are also dealing with the accuracy of SLS printing.
-// Some dimensions here are slightly off from the datasheets intentionally.
+// For the DIP version, the "pcb" is really a DIP or CERDIP, so for the DIP
+// version the the pcb-related measurements are based on ceramic dip standards,
+// not the socket.
+//
+// This makes some of the code look a little schizophrenic and convoluted, sorry.
+//
+// Some dimensions here are slightly off from the datasheets intentionally,
+// as we are also dealing with the limits of SLS printing.
 
 _fc = 0.1;  // fitment clearance
 min_wall = 0.7; // minimum allowed wall thickness, Shapeways & Sculpteo both say 0.7mm for SLS
 
 pitch = 2.54; // pin pitch 0.1"
 
-// for the DIP version, the "PCB" dims are actually a ceramic dip body
-cerdip_body_y = 14.8;
-cerdip_body_x_extra = 2;  // added to pins/2*pitch to get body length
-cerdip_body_z = 4.5;
-
 // main box-shaped cavity inside socket
 // not counting polarity features or contacts
 //main_x = 39.6;    // 050395288_sd.pdf 50-39-5288 DIM. F: 39.8 / 015299282_sd.pdf: 40.01
 main_x = ((pins/2)*pitch)+4.04; // 4.04 is back-derived from the 39.6 value for 28-pin version
 main_y = 16.6;    // 050395288_sd.pdf: 16.64 / 015299282_sd.pdf: 16.89
-main_z = 7.6;    // neither datasheet shows the carrier height nor the socket depth
+main_z = 7.6;    // Overall height of carrier. Neither datasheet shows, so this is from measuring.
+
+// for the DIP version, the "PCB" dims are actually a ceramic dip body
+cerdip_body_y = 14.8;
+cerdip_body_x_extra = 2;  // pins/2 * pitch + _extra = body length
+cerdip_body_z = 4.5;
 
 // pcb thickness
 pcb_thickness = (variant=="DIP") ? cerdip_body_z : 1.6;
 
-_mr = 0.836; // pcb edge cut mill radius (0.034")
-
-// pcb cavity (pcb will be smaller)
+// pcb cavity (pcb will be smaller to fit inside this space)
 //pcb_x = (variant=="DIP") ? 37.5 : main_x-1.5;     // leave walls >= 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
 pcb_x = (variant=="DIP") ? ((pins/2)*pitch)+cerdip_body_x_extra : main_x-min_wall*2;     // leave walls >= 0.7  ( (main_x-pcb_x)/2 >= 0.7 )
 
@@ -79,11 +85,11 @@ pcb_z = _fc+pcb_thickness+_fc;
 pcb_elev = (variant=="DIP") ? 2.9 : 2.2;  // min 1.9 - max 2.4
 
 // cavity in bottom tray for backside components and through-hole legs
-perimeter_ledge = (variant=="maxpcb")?0:0.8;
+perimeter_ledge = (variant=="maxpcb")?0:min_wall;
 pocket_x = pcb_x-perimeter_ledge*2;
-pocket_y = pcb_y-perimeter_ledge*2;
+pocket_y = pcb_y-perimeter_ledge*2-_fc*2;
 if(pcb_x-pocket_x < 1 && pcb_y-pocket_y < 1 && variant != "maxpcb") echo("ERROR: Unsupported PCB! Reduce pocket_x or pocket_y, or increase perimeter_ledge");
-pocket_floor = 0.8; // floor thickness. fab limit 0.7 min
+pocket_floor = min_wall; // floor thickness
 pocket_z = pcb_elev - pocket_floor;
 
 // wedge-shaped corner posts at pin1 & pin28
@@ -115,19 +121,17 @@ ret_z = 2;        // height
 
 // castellated edge contacts
 // get the drill size & position values from the footprint in KiCAD
-// PCB/000_LOCAL.pretty/Molex78805_PCB.kicad_mod
+// PCB/000_LOCAL.pretty/Molex78802_PCB_28.kicad_mod
 // drill size and position for castellated edge contacts
-c_drill_diameter = 1.6;
-c_drill_y = 8.6; // pcb center to drill center
 c_width = 1.6; // width of space to cut away from the carrier body around each contact
-c_y = 14.1; // shortest distance between opposing contacts in empty socket
+c_y = 14.1; // shortest distance between opposing contacts in empty socket (uncompressed contacts)
 c_positions = pins/2;
 c_x_full = c_positions * pitch;
 c_diff = pitch - c_width;
 c_x_min = c_x_full - c_diff;
 
 // Stuff for "DIP" variant
-pin_pocket_width = pitch-min_wall-0.1;
+pin_pocket_width = pitch-min_wall;
 pin_pocket_len = 3.5; // inside face of pin_bend_wall towards center
 pin_bend_wall_thickness = 1;
 pin_bend_wall_outsides = 14.7; // outside face to opposite outside face
@@ -139,7 +143,7 @@ pin_bend_wall_height = 1.7; // pcb_elev to bottom of wall that pins bend over
 
 // pcb polarity chamfer
 // derived from contacts & clearance - rounded to 0.1 precision
-pcb_polarity_chamfer = (variant=="PCB") ? round((pcb_x/2-c_x_min/2-_fc/2)*10)/10 : 0; // pin 1 corner polarity chamfer
+pcb_polarity_chamfer = (variant=="PCB") ? round((pcb_x/2-c_x_min/2)*10)/10 : 0; // pin 1 corner polarity chamfer
 
 // pcb prongs for "maxpcb" variant
 // corner prongs
@@ -148,12 +152,16 @@ prong_cyl = (main_x-pcb_x)/2;  // aka _pbh - _fc/2
 _pbw = prong_w * 2;     // one prong double width for polarity
 _pbh = (variant=="maxpcb") ? main_x/2-pcb_x/2+_fc/2 : 0;  // bump height = end wall thickness
 
-o = 0.2;  // overcut - extend cut shapes beyond the outside surfaces they cut from, to prevent zero-thickness planes in previews, renders, & mesh outputs
+// overlap/overextend - extend cut shapes this far beyond the outside surfaces they cut from,
+// and embed union shapes this far beyond the surfaces into the shapes they join to
+// to prevent zero-thickness planes and other noise in renders and mesh exports.
+o = 0.2;  // enough to see clearly in preview
+
 legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the legacy variant - acommodate mill radius in pcb edge cuts
 
 $fn=18; // arc smoothness
 
-// Display some calculated values in the console,
+// Display some calculated values in the console, (View -> [ ] Hide Console)
 // so that it's easy to copy them to KiCAD,
 if(variant!="DIP"){
 echo("###################################################################");
@@ -200,7 +208,10 @@ module blade(){
 }
 
 module carrier () {
-union () {
+// Collect all the pieces into a single union
+// so that they become a single part.
+// There are some pieces that come after the difference().
+union () {  // outer wrapper
 
 // most of the body
 difference(){
@@ -275,13 +286,9 @@ difference(){
     }
 
     // Cut the fingers down to either pcb_elev or pocket_floor.
-    //
-    // If there isn't going to be at least 0.5 ledge to rest on,
-    // then don't bother having any posts at all, just cut
-    // the fingers down level with the pocket floor.
-    //
-    // Otherwise, cut the fingers to leave posts up to pcb_elev for the pcb to rest on.
-    finger_z = (pcb_y-pocket_y<1) ? pocket_floor : pcb_elev;
+    // If the posts won't be at least min_wall thick then cut to pocket_floor,
+    // otherwise cut to pcb_elev.
+    finger_z = (pcb_y-pocket_y<min_wall*2) ? pocket_floor : pcb_elev;
     translate([-c_x_min/2,-(main_y+o)/2,-main_z/2+finger_z])
     cube([c_x_min,main_y+o,main_z]);
 
@@ -307,22 +314,22 @@ difference(){
     // cut out the pin pockets
     mirror_copy([0,1,0])
       for (i=[0:c_positions-1]){
-        // main pocket
-        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),pin_bend_wall_outsides/2-pin_bend_wall_thickness,-main_z/2+pcb_elev-min_wall-0.1])
+        // main pocket, bend wall inside face
+        translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),pin_bend_wall_outsides/2-pin_bend_wall_thickness,-main_z/2+pcb_elev-min_wall])
          rotate([180,0,0])
           cube([pin_pocket_width,pin_pocket_len,o+pcb_elev+o]);
-        // bend wall bottom clearance
+        // bend wall bottom face
         translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),main_y/2+o,-main_z/2+pcb_elev-pin_bend_wall_height])
          rotate([180,0,0])
           cube([pin_pocket_width,pin_pocket_len,pcb_elev-pin_bend_wall_height+o]);
-        // bend wall outside clearance
+        // bend wall outside face
         translate([-(c_x_full/2)+pitch/2-pin_pocket_width/2+(i*pitch),pin_bend_wall_outsides/2,-main_z/2-o])
          rotate([0,0,0])
           cube([pin_pocket_width,main_y/2-pin_bend_wall_outsides/2+o,o+main_z+o]);
       }
       // hollow out the backbone
-      backbone_cavity_y = pin_bend_wall_outsides-pin_bend_wall_thickness*2-pin_pocket_len*2-min_wall*2-0.2;
-      translate([c_x_full/2,-backbone_cavity_y/2,-main_z/2+pcb_elev-min_wall-0.1])
+      backbone_cavity_y = pin_bend_wall_outsides-pin_bend_wall_thickness*2-pin_pocket_len*2-min_wall*2;
+      translate([c_x_full/2,-backbone_cavity_y/2,-main_z/2+pcb_elev-min_wall])
        rotate([0,180,0])
        cube([c_x_full,backbone_cavity_y,o+pcb_elev+o]);
     }
@@ -340,7 +347,7 @@ if (variant!="maxpcb" && variant!="DIP") mirror_copy([1,0,0]) // pin 14/15 end
           [ret_x,0]
         ]);
 
-// pcb polarity
+// pcb polarity chamfer
 if(variant=="PCB"){
   // pin-1 corner chamfer
   difference(){
@@ -349,16 +356,16 @@ if(variant=="PCB"){
     linear_extrude(pcb_elev+pcb_z)
       polygon([
         [0,0],
-        [0,pcb_polarity_chamfer+o],
-        [pcb_polarity_chamfer+o,0],
+        [0,pcb_polarity_chamfer+_fc*2+o],
+        [pcb_polarity_chamfer+_fc*2+o,0],
       ]);
-  // remove part of the wedge that ends up outside of main_y
   // fakakta math to hug the odd angle made by the wedge-shaped corner wing
+  // to clean off part of the wedge ends up outside of main_y
   translate([-main_x/2+cpwedge_xwide,-main_y/2,-main_z/2-o])
    linear_extrude(o+main_z+o)
     polygon([
     [0,0],
-    [pcb_polarity_chamfer+o,0],
+    [pcb_polarity_chamfer+_fc*2+o,0],
     [-cpwedge_xwide+cpwedge_xnarrow,-cpwedge_y/2+main_y/2]
     ]);
   }
@@ -367,6 +374,11 @@ if(variant=="PCB"){
 if(variant=="maxpcb"){
   _py = pcb_y-_fc*2;
 
+  // using cylinders to make rounded surfaces in the holes
+  // so the pcb can have concave shapes from drills
+  // so the carrier and pcb snap together.
+  // In reality neither the 3d-printer nor the pcb manufacturer
+  // are accurate enough for this to actually work.
   translate([-pcb_x/2-prong_cyl/2,-_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
   translate([-pcb_x/2-prong_cyl/2,-_py/2+_pbw,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
 
@@ -379,8 +391,8 @@ if(variant=="maxpcb"){
   translate([pcb_x/2+prong_cyl/2,-_py/2+prong_w,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
   translate([pcb_x/2+prong_cyl/2,-_py/2,-main_z/2+pcb_elev-o/2]) cylinder(h=pcb_z+o,d=prong_cyl);
 }
-}  // union
-}  // carrier
+}  // union() - outer wrapper
+}  // carrier()
 
 ////////////////////////////////////////////////////////////////////////////////
 
