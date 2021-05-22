@@ -9,16 +9,14 @@ The OpenSCAD file generates 2 types of carrier, one type that holds a DIP chip l
 
 The KiCAD files are for the matching PCB with the special board outline and castellated edge contacts to fit the PCB carrier. The pcbs are empty starter templates. Copy the entire PCB directory to a new project and rename the kicad_pcb file to a new name to start a new pcb.
 
-Each of those are also available in 24, 28, and 32-pin sizes, as the original Molex 78802 & 78805 were.
-
-The Makefile just generates .stl files from the .scad file, and .step files from the .stl files.
+Each of those are also available in 24, 28, and 32-pin sizes, as the original Molex 78802 & 78805 were. ([references/050395288_sd_corrected.pdf]())  
+Though almost everything uses the 28-pin.
 
 Uses:
-* TRS-80/TANDY Model 100/102/200/600 option rom socket is a 28-pin Molex 78805 socket
-* Epson PX-4, PX-8 have 28-pin Molex 78805 sockets
-* Intermec 9440, Telexon 710, and various other similar hand-held teriminals have a 28-pin 78805 socket
-* RB5X robot has a 24-pin Molex 78805 socket
-
+* TRS-80/TANDY Model 100, 102, 200, 600
+* Epson PX-4, PX-8
+* Intermec 9440, Telexon 710, and various other similar hand-held teriminals
+* RB5X robot (24-pin!)
 
 http://tandy.wiki/Molex78802_Module  
 http://tandy.wiki/Teeprom  
