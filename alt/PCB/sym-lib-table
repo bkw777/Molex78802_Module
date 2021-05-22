@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name 000_LOCAL)(type Legacy)(uri ${KIPRJMOD}/000_LOCAL.lib)(options "")(descr ""))
-)

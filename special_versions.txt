@@ -6,7 +6,7 @@ To generate a maxpcb version, run:
 The maxpcb version is difficult to use, incompatible with normal REX/Teeprom/Meeprom boards, and probably never needed, so it's hidden for simplicity. But it exists to provide an option if ever really needed, that gives the absolute most possible usable pcb real-estate.
 
 The normal PCB version has:
-* A ledge running aoround the perimeter for the pcb to rest on, which consumes a 0.7mm on all 4 sides on the bottom.
+* A ledge running aoround the perimeter for the pcb to rest on, which consumes a 0.7mm border on all 4 sides on the bottom.
 * 2 snap wedges on top that hold the pcb down, which consumes 2 1x10mm chunks on the top.
 * A polarity chamfer in one corner which consumes 1.7mm of that corner on top and bottom
 

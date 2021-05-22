@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name 000_LOCAL)(type KiCad)(uri ${KIPRJMOD}/000_LOCAL.pretty)(options "")(descr ""))
-)
