@@ -7,4 +7,4 @@ all:
 	${MAKE} -C Carrier pins=28
 	${MAKE} -C Carrier pins=32
 	mv -vf Carrier/*.png .
-	mv -vf Carrier/*.step PCB/000_LOCAL.pretty/3d/
+	mv -vf Carrier/*_PCB_*.step PCB/000_LOCAL.pretty/3d/
