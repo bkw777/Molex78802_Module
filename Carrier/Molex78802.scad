@@ -28,7 +28,9 @@ variant = "PCB"; // Makefile overrides this via "-D ..."
 // Number of pins:
 // Molex 78802 datasheet shows 24, 28, and 32-pin versions
 pins = 28; // Makefile overrides this with "-D ..."
-assert(pins>=2 && pins%2==0);
+
+// comment-out for importing into freecad
+$fn=18; // arc smoothness
 
 // The DIP and PCB versions work a little differently.
 //
@@ -159,10 +161,9 @@ o = 0.2;  // enough to see clearly in preview
 
 legacy_side_wall_chamfer = 0.5; // size of chamfers on inside side walls for the legacy variant - acommodate mill radius in pcb edge cuts
 
-$fn=18; // arc smoothness
-
 // Display some calculated values in the console, (View -> [ ] Hide Console)
 // so that it's easy to copy them to KiCAD,
+assert(pins>=2 && pins%2==0);
 if(variant!="DIP"){
 echo("###################################################################");
 echo("#");
