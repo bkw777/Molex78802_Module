@@ -17,6 +17,7 @@ Though almost everything uses the 28-pin.
 
 Uses:
 * TRS-80/TANDY Model 100, 102, 200, 600
+* Kyotronic KC-85
 * Epson PX-4, PX-8
 * Intermec 9440, Telexon 710, and various other similar hand-held teriminals
 * RB5X robot (24-pin!)
