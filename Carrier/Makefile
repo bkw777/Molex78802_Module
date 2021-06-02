@@ -35,8 +35,10 @@ $(model)_%_$(pins).step: stl-to-step.py $(model)_%_$(pins).stl
 help list:
 	@echo "Targets: all $(variants) help list clean"
 	@echo
-	@echo "  all = generate $(pins)-pin .stl, .step, and .png for all variants: ($(variants))"
-	@echo "  $(variants) = generate .stl, .step, and .png for the specified variation"
+#	@echo "  all = generate $(pins)-pin .stl, .step, and .png for all variants: ($(variants))"
+	@echo "  all = generate $(pins)-pin .stl and .step for all variants: ($(variants))"
+#	@echo "  $(variants) = generate .stl, .step, and .png for the specified variation"
+	@echo "  $(variants) = generate .stl and .step, for the specified variation"
 	@echo "  help or list: display this text"
 	@echo "  clean: delete *.stl *.step"
 

@@ -28,15 +28,15 @@ http://tandy.wiki/REX
 
 Brian K. White - b.kenyon.w@gmail.com
 
-## CERDIP 24  
+## DIP 24  
 ![](Molex78802_CERDIP_24.jpg)  
 ![](Molex78802_CERDIP_24_b.jpg)
 
-## CERDIP 28  
+## DIP 28  
 ![](Molex78802_CERDIP_28.jpg)  
 ![](Molex78802_CERDIP_28_b.jpg)
 
-## CERDIP 32  
+## DIP 32  
 ![](Molex78802_CERDIP_32.jpg)  
 ![](Molex78802_CERDIP_32_b.jpg)
 
