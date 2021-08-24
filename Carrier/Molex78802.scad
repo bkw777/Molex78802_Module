@@ -19,18 +19,19 @@
 // -------------------------------------------------------------------------
 // UNITS: mm
 
-// Which version of the carrier to produce:
 // "DIP" - fits a standard DIP chip, not a PCB
 // "PCB" - 28-pin version of this fits REX#, REXCPM, REX_Classic_BKW, Teeprom, Meeprom - *default*
 // "maxpcb" - maximum possible usable pcb real-estate, difficult to use
-variant = "DIP"; // Makefile overrides this via "-D ..."
+// Type: "DIP", "PCB", "maxpcb"
+variant = "PCB";
 
-// Number of pins:
 // Molex 78802 datasheet shows 24, 28, and 32-pin versions
-pins = 28; // Makefile overrides this with "-D ..."
+// Number of pins: 24, 28, 32
+pins = 28;
 
 // comment-out for importing into freecad
-$fn=18; // arc smoothness
+// arc smoothness
+$fn=18;
 
 // The DIP and PCB versions work a little differently.
 //
@@ -48,14 +49,22 @@ $fn=18; // arc smoothness
 // Some dimensions here are slightly off from the datasheets intentionally,
 // as we are also dealing with the limits of SLS printing.
 
-_fc = 0.05;  // fitment clearance
-min_wall = 0.7; // minimum allowed wall thickness, Shapeways & Sculpteo both say 0.7mm for SLS
+// Fitment Clearance
+_fc = 0.05;
 
-pitch = 2.54; // pin pitch 0.1"
+// min allowed wall thickness
+min_wall = 0.7;
+
+// minimum allowed unsupported wires thickness
+min_unsupported_wires = 1.0;
+
+// pin pitch (2.54 is the only valid value)
+pitch = 2.54;
 
 // main box-shaped cavity inside socket
 // not counting polarity features or contacts
 //main_x = 39.6;    // 050395288_sd.pdf 50-39-5288 DIM. F: 39.8 / 015299282_sd.pdf: 40.01
+// derived from pins and pitch
 main_x = ((pins/2)*pitch)+4.04; // 4.04 is back-derived from the 39.6 value for 28-pin version
 main_y = 16.6;    // 050395288_sd.pdf: 16.64 / 015299282_sd.pdf: 16.89
 main_z = 7.6;    // Overall height of carrier. Neither datasheet shows, so this is from measuring.
@@ -85,7 +94,8 @@ pcb_elev = (variant=="DIP") ? 2.9 : 2.2;  // min 1.9 - max 2.4
 // cavity in bottom tray for backside components and through-hole legs
 perimeter_ledge = (variant=="maxpcb")?0:min_wall+0.1;
 pocket_x = pcb_x-perimeter_ledge*2;
-pocket_y = pcb_y-perimeter_ledge*2;
+//pocket_y = pcb_y-perimeter_ledge*2;
+pocket_y = pcb_y-min_unsupported_wires*2;
 if(pcb_x-pocket_x < 1 && pcb_y-pocket_y < 1 && variant != "maxpcb") echo("ERROR: Unsupported PCB! Reduce pocket_x or pocket_y, or increase perimeter_ledge");
 pocket_floor = min_wall; // floor thickness
 pocket_z = pcb_elev - pocket_floor;
@@ -121,7 +131,7 @@ ret_z = 2;        // height
 // get the drill size & position values from the footprint in KiCAD
 // PCB/000_LOCAL.pretty/Molex78802_PCB_28.kicad_mod
 // drill size and position for castellated edge contacts
-c_width = 1.6; // width of space to cut away from the carrier body around each contact
+c_width = pitch-min_unsupported_wires; // width of space to cut away from the carrier body around each contact
 //c_y = 14.1; // shortest distance between opposing contacts in empty socket (uncompressed contacts)
 c_y = 13.5; // shortest distance between opposing contacts in empty socket (uncompressed contacts)
 c_positions = pins/2;
