@@ -24,7 +24,7 @@ http://tandy.wiki/Molex78802_Module
 http://tandy.wiki/Teeprom  
 http://tandy.wiki/REX  
 
-You can get 3d printed parts from Shapeways: https://www.shapeways.com/shops/bkw
+You can get 3d printed parts from Shapeways: (all versions) https://www.shapeways.com/shops/bkw  
 Or Sculpteo [PCB_24](https://www.sculpteo.com/en/print/molex78802_pcb_24-3/RsZeqHPr) [PCB_28](https://www.sculpteo.com/en/print/molex78802_pcb_28-12/WcG4p9tn) [PCB_32](https://www.sculpteo.com/en/print/molex78802_pcb_32-2/yHhtP8Rm) [DIP_24](https://www.sculpteo.com/en/print/molex78802_dip_24/P2V6xXt8) [DIP_28](https://www.sculpteo.com/en/print/molex78802_dip_28-7/LX6JbLYc) [DIP_32](https://www.sculpteo.com/en/print/molex78802_dip_32/sJC8nkke)
 
 Brian K. White - b.kenyon.w@gmail.com
