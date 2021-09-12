@@ -25,7 +25,7 @@ http://tandy.wiki/Teeprom
 http://tandy.wiki/REX  
 
 You can get 3d printed parts from Shapeways: (all versions) https://www.shapeways.com/shops/bkw  
-Or Sculpteo: [PCB24](https://www.sculpteo.com/en/print/molex78802_pcb_24-3/RsZeqHPr), [PCB28](https://www.sculpteo.com/en/print/molex78802_pcb_28-12/WcG4p9tn), [PCB32](https://www.sculpteo.com/en/print/molex78802_pcb_32-2/yHhtP8Rm), [DIP24](https://www.sculpteo.com/en/print/molex78802_dip_24/P2V6xXt8), [DIP28](https://www.sculpteo.com/en/print/molex78802_dip_28-7/LX6JbLYc), [DIP32](https://www.sculpteo.com/en/print/molex78802_dip_32/sJC8nkke).
+Or Sculpteo: [PCB24](https://www.sculpteo.com/en/print/molex78802_pcb_24-4/xMikpkmg), [PCB28](https://www.sculpteo.com/en/print/molex78802_pcb_28-13/Bw4x3yG6), [PCB32](https://www.sculpteo.com/en/print/molex78802_pcb_32-3/zmUBXFK4), [DIP24](https://www.sculpteo.com/en/print/molex78802_dip_24/P2V6xXt8), [DIP28](https://www.sculpteo.com/en/print/molex78802_dip_28-7/LX6JbLYc), [DIP32](https://www.sculpteo.com/en/print/molex78802_dip_32/sJC8nkke).
 
 Brian K. White - b.kenyon.w@gmail.com
 
