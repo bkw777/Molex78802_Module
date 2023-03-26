@@ -1,6 +1,5 @@
 # Molex78802 Module
 ![](Molex78802_PCB_28.jpg)
-(The copper rings are just a flaw in KiCAD's 3d viewer. The PCB sides are actually castellated.)
 ![](PCB_28_example_1.jpg)
 ![](PCB_28_example_2.jpg)
 
