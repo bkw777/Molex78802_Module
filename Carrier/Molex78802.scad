@@ -20,7 +20,7 @@
 // UNITS: mm
 
 // "DIP" - fits a standard DIP chip, not a PCB
-// "PCB" - 28-pin version of this fits REX#, REXCPM, REX_Classic_BKW, Teeprom, Meeprom - *default*
+// "PCB" - 28-pin version of this fits REX#, REXCPM, REX_Classic_BKW, Teeprom, Meeprom, 4ROM_TANDY, 4ROM_27256 - *default*
 // "maxpcb" - maximum possible usable pcb real-estate, difficult to use
 // Type: "DIP", "PCB", "maxpcb"
 variant = "PCB";
@@ -29,7 +29,8 @@ variant = "PCB";
 // Number of pins: 24, 28, 32
 pins = 28;
 
-// comment-out for importing into freecad
+// Temporarily comment out $fn $fs $fa and save for importing into freecad.
+// Otherwise freecad only imports the mesh facets, not the source geometry.
 // arc smoothness
 $fn=18;
 
@@ -56,7 +57,7 @@ _fc = 0.05;
 min_wall = 0.7;
 
 // minimum allowed unsupported wires thickness
-min_unsupported_wires = 1.0;
+min_unsupported_wires = 1.1;
 
 // pin pitch (2.54 is the only valid value)
 pitch = 2.54;
@@ -99,6 +100,7 @@ pocket_y = pcb_y-min_unsupported_wires*2;
 if(pcb_x-pocket_x < 1 && pcb_y-pocket_y < 1 && variant != "maxpcb") echo("ERROR: Unsupported PCB! Reduce pocket_x or pocket_y, or increase perimeter_ledge");
 pocket_floor = min_wall; // floor thickness
 pocket_z = pcb_elev - pocket_floor;
+pocket_fillet_radius = 1.1;
 
 // wedge-shaped corner posts at pin1 & pin28
 cpwedge_xwide = 1.6;    // thick end of wedge
@@ -156,10 +158,10 @@ pcb_polarity_chamfer = (variant=="PCB") ? round((pcb_x/2-c_x_min/2)*10)/10 : 0; 
 
 // pcb prongs for "maxpcb" variant
 // corner prongs
-prong_w = (variant=="maxpcb") ? 2 : 0;
+prong_w = (variant=="maxpcb") ? 2.5 : 0;
 prong_cyl = (main_x-pcb_x)/2;  // aka _pbh - _fc/2
 _pbw = prong_w * 2;     // one prong double width for polarity
-_pbh = (variant=="maxpcb") ? main_x/2-pcb_x/2+_fc/2 : 0;  // bump height = end wall thickness
+_pbh = (variant=="maxpcb") ? main_x/2-pcb_x/2+cpbox_xe+_fc/2 : 0;  // bump height = end wall thickness
 
 // overlap/overextend - extend cut shapes this far beyond the outside surfaces they cut from,
 // and embed union shapes this far beyond the surfaces into the shapes they join to
@@ -279,9 +281,24 @@ difference(){
                 [0,lswcs]
               ]);
     } else {
+    ///////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////
     // pocket for backside components
-    translate([0,0,pcb_elev-pocket_z])
-     cube([pocket_x,pocket_y,main_z],center=true);
+    translate([0,0,pcb_elev-pocket_z]) {
+      // replace this cube with one with rounded corners
+      // to make fillets at the base of the fingers
+      // so they are slightly less likely to break off
+      //cube([pocket_x,pocket_y,main_z],center=true);
+      hull() {
+        mirror_copy([0,0,1])
+          translate([0,0,main_z/2-pocket_fillet_radius])
+            mirror_copy([1,0,0])
+              translate([pocket_x/2-pocket_fillet_radius,0,0])
+                mirror_copy([0,1,0])
+                  translate([0,pocket_y/2-pocket_fillet_radius,0])
+                    sphere(pocket_fillet_radius);
+      }
+    }
 
     // clearance for socket contacts
     mirror_copy([0,1,0])
@@ -310,10 +327,10 @@ difference(){
 
     // holes in end-walls
     if(variant=="maxpcb"){
-      translate([-main_x/2-o,-pcb_y/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,_pbw,pcb_z]);
-      translate([-main_x/2-o,pcb_y/2-prong_w,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
-      translate([pcb_x/2-o,pcb_y/2-prong_w,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
-      translate([pcb_x/2-o,-pcb_y/2,-main_z/2+pcb_elev]) cube([o+_pbh+o,prong_w,pcb_z]);
+      translate([-main_x/2-o, -pcb_y/2,        -main_z/2+pcb_elev]) cube([o+_pbh+o, _pbw,    pcb_z]);
+      translate([-main_x/2-o, pcb_y/2-prong_w, -main_z/2+pcb_elev]) cube([o+_pbh+o, prong_w, pcb_z]);
+      translate([pcb_x/2-o,   -pcb_y/2,        -main_z/2+pcb_elev]) cube([o+_pbh+o, prong_w, pcb_z]);
+      translate([pcb_x/2-o,   pcb_y/2-prong_w, -main_z/2+pcb_elev]) cube([o+_pbh+o, prong_w, pcb_z]);
     }
     
     // The DIP variant is totally different
