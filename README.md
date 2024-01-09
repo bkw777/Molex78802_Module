@@ -20,7 +20,7 @@ Uses:
 * RB5X robot (24-pin!)
 
 http://tandy.wiki/Molex78802_Module  
-http://tandy.wiki/M4ROM  
+https://github.com/bkw777/M4ROM  
 http://tandy.wiki/Teeprom  
 http://tandy.wiki/REX  
 
