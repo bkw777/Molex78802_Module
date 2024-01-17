@@ -25,6 +25,17 @@
 // Type: "DIP", "PCB", "maxpcb"
 variant = "PCB";
 
+// Easier Printing Option - remove the little finger posts
+//
+// The "PCB" variant has little finger posts supporting the PCB
+// between each DIP contact, which are difficult to print even with SLS.
+// You can set PCB_fingers to false to remove them.
+// The pcb will be unsupported in the middle,
+// but the entire pcb is short enough that it should be ok.
+// Including the posts is the safest for the user, as it garantees the that pcb
+// can not be depressed too far into the socket no matter how hard one presses.
+PCB_fingers = true;
+
 // Molex 78802 datasheet shows 24, 28, and 32-pin versions
 // Number of pins: 24, 28, 32
 pins = 28;
@@ -32,7 +43,7 @@ pins = 28;
 // Temporarily comment out $fn $fs $fa and save for importing into freecad.
 // Otherwise freecad only imports the mesh facets, not the source geometry.
 // arc smoothness
-$fn=18;
+$fn = 18;
 
 // The DIP and PCB versions work a little differently.
 //
@@ -140,6 +151,7 @@ c_positions = pins/2;
 c_x_full = c_positions * pitch;
 c_diff = pitch - c_width;
 c_x_min = c_x_full - c_diff;
+c_fingers = (variant=="maxpcb") ? false : PCB_fingers;
 
 // Stuff for "DIP" variant
 pin_pocket_width = pitch-min_wall;
@@ -281,33 +293,42 @@ difference(){
                 [0,lswcs]
               ]);
     } else {
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    // pocket for backside components
-    translate([0,0,pcb_elev-pocket_z]) {
-      // replace this cube with one with rounded corners
-      // to make fillets at the base of the fingers
-      // so they are slightly less likely to break off
-      //cube([pocket_x,pocket_y,main_z],center=true);
-      hull() {
-        mirror_copy([0,0,1])
-          translate([0,0,main_z/2-pocket_fillet_radius])
-            mirror_copy([1,0,0])
-              translate([pocket_x/2-pocket_fillet_radius,0,0])
-                mirror_copy([0,1,0])
-                  translate([0,pocket_y/2-pocket_fillet_radius,0])
-                    sphere(pocket_fillet_radius);
+      ///////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////
+      // pocket for backside components
+      translate([0,0,pcb_elev-pocket_z]) {
+        hull() {
+          mirror_copy([0,0,1])
+            translate([0,0,main_z/2-pocket_fillet_radius])
+              mirror_copy([1,0,0])
+                translate([pocket_x/2-pocket_fillet_radius,0,0])
+                  mirror_copy([0,1,0])
+                    translate([0,pocket_y/2-pocket_fillet_radius,0])
+                      sphere(pocket_fillet_radius);
+        }
       }
-    }
 
-    // clearance for socket contacts
-    mirror_copy([0,1,0])
-      for (i=[0:c_positions-1])
-        translate([-(c_x_full/2)+(pitch/2)+(i*pitch),c_y/2+c_width/2-_fc,-main_z/2-o])
-          hull(){
-            cylinder(h=o+main_z+o,d=c_width);
-            translate([0,main_y/2-c_y/2+_fc,0]) cylinder(h=o+main_z+o,d=c_width);
-          }
+      // clearance for socket contacts
+      mirror_copy([0,1,0]) {
+        if (c_fingers) {
+          for (i=[0:c_positions-1])
+            translate([-(c_x_full/2)+(pitch/2)+(i*pitch),c_y/2+c_width/2-_fc,-main_z/2-o])
+              hull(){
+                cylinder(h=o+main_z+o,d=c_width);
+                translate([0,main_y/2-c_y/2+_fc,0]) cylinder(h=o+main_z+o,d=c_width);
+              }
+        } else {
+          translate([-c_x_min/2,-main_y/2-o,-main_z/2-o])
+            // Cut to the depth of the pocket fillet radius to prevent a pointless lip.
+            cube([c_x_min,main_y/2-pocket_y/2+pocket_fillet_radius+o,o+main_z+o]);
+            // Cut to the depth of the finger slots.
+            // Leaves a tiny lip along the edge that may complicate printing
+            // for no benefit. Print service may warn that it's a "thin wall"
+            // when really you don't care if it's blunted to nothing, so the deeper
+            // cut above just avoids the question from coming up in the first place.
+            //cube([c_x_min,main_y/2-c_y/2+o,o+main_z+o]);
+        }
+      }
     }
 
     // Cut the fingers down to either pcb_elev or pocket_floor.
@@ -325,8 +346,8 @@ difference(){
     translate([-main_x/2-wing_x-o,-blade_thickness/2,main_z/2-wing_thickness-o])
       cube([wing_x-blade_xwide+o,blade_thickness,o+wing_thickness+o]);
 
-    // holes in end-walls
     if(variant=="maxpcb"){
+      // holes in end-walls
       translate([-main_x/2-o, -pcb_y/2,        -main_z/2+pcb_elev]) cube([o+_pbh+o, _pbw,    pcb_z]);
       translate([-main_x/2-o, pcb_y/2-prong_w, -main_z/2+pcb_elev]) cube([o+_pbh+o, prong_w, pcb_z]);
       translate([pcb_x/2-o,   -pcb_y/2,        -main_z/2+pcb_elev]) cube([o+_pbh+o, prong_w, pcb_z]);
