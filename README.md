@@ -24,7 +24,10 @@ https://github.com/bkw777/M4ROM
 http://tandy.wiki/Teeprom  
 http://tandy.wiki/REX  
 
-28-pin PCB version for REX Classic, REX\#, REX CP/M, M4ROM, Dial-A-ROM, Teeprom/Meeprom: https://shop.jawstec.com/product.php?id=641
+Buy commercial SLS or MJF print:  
+[28-pin PCB version from JawsTec](https://shop.jawstec.com/product.php?id=641)  
+for REX Classic, REX\#, REX CP/M, M4ROM, Dial-A-ROM, Teeprom/Meeprom
+
 <!-- Sculpteo has a $50 minimum order, if you order less than $50 worth of parts before tax & shipping, then they charge you the difference. So you have to order 8 or 9 carriers minimum. -->
 <!-- Or Sculpteo: [PCB24](https://www.sculpteo.com/en/print/molex78802_pcb_24-4/xMikpkmg), [PCB28](https://www.sculpteo.com/en/print/molex78802_pcb_28-13/Bw4x3yG6), [PCB32](https://www.sculpteo.com/en/print/molex78802_pcb_32-3/zmUBXFK4), [DIP24](https://www.sculpteo.com/en/print/molex78802_dip_24/P2V6xXt8), [DIP28](https://www.sculpteo.com/en/print/molex78802_dip_28-7/LX6JbLYc), [DIP32](https://www.sculpteo.com/en/print/molex78802_dip_32/sJC8nkke). -->
 
